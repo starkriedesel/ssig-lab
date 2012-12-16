@@ -1,0 +1,43 @@
+= form_for @challenge, :html => {:class => "form-horizontal"} do |f|
+  %fieldset.span5.well
+    .control-group{class: (@challenge.errors[:challenge_group_id].any? ? 'warning':'')}
+      = f.label :challenge_group_id, :class=>'control-label'
+      .controls
+        = f.collection_select(:challenge_group_id,ChallengeGroup.all,:id,:name,{:prompt=>true})
+        - if can? :create, ChallengeGroup
+          = link_to 'New', new_challenge_group_path, :class=>'btn'
+    .control-group{class: (@challenge.errors[:name].any? ? 'warning':'')}
+      = f.label :name, :class=>"control-label"
+      .controls
+        = f.text_field :name
+    .control-group{class: (@challenge.errors[:url].any? ? 'warning':'')}
+      = f.label :url, :class=>"control-label"
+      .controls
+        = f.text_field :url
+    .control-group{class: (@challenge.errors[:points].any? ? 'warning':'')}
+      = f.label :points, :class=>"control-label"
+      .controls
+        = f.text_field :points
+    .control-group{class: (@challenge.errors[:description].any? ? 'warning':'')}
+      = f.label :description, :class=>"control-label"
+      .controls
+        = f.text_area :description, :rows=>5, :style=>'width:90%'
+    .control-group{style:''}
+      .controls
+        %label.checkbox
+          %input{:type=>'checkbox'}
+          Use Markdown
+    %hr
+    .control-group{class: (@challenge.errors[:hint].any? ? 'warning':'')}
+      = f.label :hint, :class=>"control-label"
+      .controls
+        = f.text_area :hint, :rows=>5, :style=>'width:90%'
+    .control-group
+      .controls
+        - if params[:action] == 'new'
+          = f.submit "Create", :class=> 'btn btn-primary'
+        - elsif params[:action] == 'edit'
+          = f.submit "Update", :class=> 'btn btn-primary'
+        - else
+          = f.submit "Submit", :class=> 'btn btn-primary'
+          

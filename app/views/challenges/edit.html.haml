@@ -1,0 +1,5 @@
+= render :partial => 'layouts/form_errors', :locals => {:form_model => @challenge}
+%h3
+  Edit Challenge
+  ="'#{@challenge.name}'"
+= render 'form'

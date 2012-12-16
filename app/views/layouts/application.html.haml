@@ -1,0 +1,25 @@
+!!! html
+%html
+  %head
+    %title SSigLab
+    = stylesheet_link_tag 'application', :media=>'all'
+    = javascript_include_tag 'application'
+    = csrf_meta_tags
+  %body
+    = #render 'layouts/navbar' unless @disable_navbar
+    = render_cell :navbar, :show
+    .row-fluid
+      .span10.offset1
+        - if not flash[:error].blank?
+          .alert.alert-error
+            = flash[:error]
+        - if not flash[:alert].blank?
+          .alert
+            = flash[:alert]
+        - if not flash[:notice].blank?
+          .alert.alert-info
+            = flash[:notice]
+        - if not flash[:success].blank?
+          .alert.alert-success
+            = flash[:success]
+        = yield

@@ -1,0 +1,33 @@
+.navbar.navbar-inverse.navbar-fixed-top
+  .navbar-inner
+    .container-fluid
+      = link_to 'SSIG Lab', root_path, :class=>'brand'
+      %div
+        - if user_signed_in?
+          = link_to 'Logout', destroy_user_session_path, :method=>:delete, :class=>'btn pull-right'
+          %p.navbar-text.pull-right
+            Signed in as
+            = link_to current_user[:username], user_path(current_user[:id]), :class=>'navbar-link'
+            &nbsp;&nbsp;&nbsp;&nbsp;
+        - else
+          = form_for User.new, :as=>:user, :url=>new_user_session_path, :html=>{:class=>'navbar-form pull-right'} do |f|
+            = f.text_field :username, :class=>'span2', :placeholder=>'Username'
+            = f.password_field :password, :class=>'span2', :placeholder=>'Password'
+            = f.submit 'Sign in', :class=>'btn'
+            
+        %ul.nav
+          - @nav_links.each_pair do |name,link|
+            - next if not link[:condition]
+            %li{class: ((link[:active]?'active':'') +' '+ (link[:sublinks].any? ? 'dropdown' : ''))}
+              %a{class: (link[:sublinks].any? ? 'dropdown-toggle' : ''), href: link[:url]}
+                = name
+                %b.caret
+              - if link[:sublinks].any?
+                %ul.dropdown-menu
+                  - link[:sublinks].each_pair do |sub_name, sub_link|
+                    %li{:class=>(sub_link[:active]?'active':'')}
+                      = link_to sub_name, sub_link[:url]
+                  
+                  
+                
+        

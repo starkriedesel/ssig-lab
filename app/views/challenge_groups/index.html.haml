@@ -1,0 +1,40 @@
+%h1 Challenge Groups
+%table{:class=>'table'}
+  %thead
+    %tr
+      %th Challenge Group
+      %th Description
+      %th Count
+      %th Points Total
+      - if can? [:update,:destroy], ChallengeGroup
+        %th Manage
+  %tbody
+    %tr
+    - @challenge_groups.each do |cg|
+      %tr
+        %td
+          = link_to cg.name, challenge_group_path(cg.id)
+        %td
+          = cg.description
+        %td
+          = cg.challenges.count
+        %td
+          = cg.challenges.sum(:points)
+        - if can? [:update,:destroy], ChallengeGroup
+          %td
+            .btn-group
+              - if can? :update, cg
+                = link_to 'Edit', edit_challenge_group_path(cg), :class=>'btn btn-warning'
+              - if can? :destroy, cg
+                - if cg.challenges.count.zero?
+                  = link_to 'Remove', challenge_group_path(cg), :class=>'btn btn-danger', :confirm=>"Are you sure you want to remove the '#{cg.name}' group?", :method=>:delete
+                - else
+                  = link_to 'Remove', '#', :class=>'btn btn-danger disabled'
+.btn-toolbar
+  .btn-group
+    = link_to 'All Challenges', challenges_path, :class=>'btn'
+  .btn-group
+    -if can? :create, ChallengeGroup
+      = link_to 'New Group', new_challenge_group_path, :class=>'btn btn-primary'
+    - if can? :create, Challenge
+      = link_to 'New Challenge', new_challenge_path, :class=>'btn btn-primary'

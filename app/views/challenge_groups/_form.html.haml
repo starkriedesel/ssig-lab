@@ -1,0 +1,19 @@
+.row-fluid
+  = form_for @challenge_group, :html => {:class => "form-horizontal"} do |f|
+    %fieldset
+      .control-group
+        = f.label :name, :class=>"control-label"
+        .controls
+          = f.text_field :name
+      .control-group
+        = f.label :description, :class=>"control-label"
+        .controls
+          = f.text_area :description, :rows=>5, :style=>'width:30%'
+      .control-group
+        .controls
+          - if params[:action] == 'new'
+            = f.submit "Create", :class=> 'btn btn-primary'
+          - elsif params[:action] == 'edit'
+            = f.submit "Update", :class=> 'btn btn-primary'
+          - else
+            = f.submit "Submit", :class=> 'btn btn-primary'

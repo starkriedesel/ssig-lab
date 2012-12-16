@@ -1,0 +1,18 @@
+%h1 Challenges
+
+- if cannot? :complete, Challenge
+  %strong{:style=>'color:red'}
+    Loggin to participate in challenges
+  %br
+  %br
+
+= render 'challenges/table'
+
+.btn-toolbar
+  .btn-group
+    = link_to 'Challenge Groups', challenge_groups_path, :class=>'btn'
+  .btn-group
+    -if can? :create, ChallengeGroup
+      = link_to 'New Group', new_challenge_group_path, :class=>'btn btn-primary'
+    - if can? :create, Challenge
+      = link_to 'New Challenge', new_challenge_path, :class=>'btn btn-primary'

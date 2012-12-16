@@ -1,0 +1,8 @@
+.row-fluid
+  - if @challenge.errors.any?
+    .alert.alert-error
+      %h5 There was a problem saving this challenge group
+      %ul
+        - @challenge.errors.full_messages.each do |msg|
+          %li
+            = msg

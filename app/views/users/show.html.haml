@@ -1,0 +1,76 @@
+%h1
+  User 
+  = @user[:username]
+.row-fluid.well
+  .span5
+    %h5 Stats
+    %table{:class=>'table'}
+      %tr
+        %th Username
+        %td= @user[:username]
+      %tr
+        %th ID
+        %td= @user[:id]
+      %tr
+        %th Points Total
+        %td= @user.completed_challenges.sum(:points)
+      %tr
+        %th Current Login
+        %td= @user[:current_sign_in_at]
+      %tr
+        %th Last Login
+        %td= @user[:last_sign_in_at]
+      %tr
+        %th Sign Up Date
+        %td= @user[:created_at]
+      %tr
+        %th Last Update
+        %td= @user[:updated_at]
+  
+  .span5
+    %h5 Completed Challenges
+    - if @user.completed_challenges.any?
+      %table{:class=>'table'}
+        %thead
+          %tr
+            %th Challenge Group
+            %th Name
+            %th Points
+            %th Completed On
+        %tbody
+          - @user.completed_challenges.joins(:challenge_group).order('challenge_groups.name').each do |c|
+            %tr
+              %td= link_to c.challenge_group.name, c.challenge_group
+              %td= link_to c.name, c
+              %td= c.points
+              %td= @user.user_completed_challenges.where('challenge_id ='+c.id.to_s).first.created_at
+    - else
+      %strong No challenges completed
+      
+.row-fluid.well
+  .span5
+    %h5 Roles
+    - if @user.roles.any?
+      %ul
+        - @user.roles.each do |r|
+          %li= r.name
+    - else
+      %strong No roles set
+      
+  .span5
+    %h5 Flags
+    - if @user.flags.any?
+      %table{:class=>'table'}
+        %thead
+          %tr
+            %th Challenge Group
+            %th Challenge
+            %th Flag
+        %tbody
+          - @user.flags.each do |f|
+            %tr
+              %td= link_to f.challenge.challenge_group.name, f.challenge.challenge_group
+              %td= link_to f.challenge.name, f.challenge
+              %td= f.value
+    - else
+      %strong No flags set
