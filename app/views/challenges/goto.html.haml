@@ -1,0 +1,9 @@
+%h1 Loading...
+
+%form{:method=>'post', :action=>@challenge.url, :id=>'challenge_redirect_form'}
+  %input{:type=>'hidden', :name=>'rails_user_id', :value=>current_user.id}
+  %input{:type=>'hidden', :name=>'rails_challenge_id', :value=>@challenge.id}
+  %input{:type=>'hidden', :name=>'rails_nonce', :value=>@flag.nonce}
+
+:javascript
+  $('#challenge_redirect_form').submit();
