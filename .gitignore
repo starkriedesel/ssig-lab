@@ -17,5 +17,7 @@
 # Compiled gem file
 Gemfile.lock
 
+/config/database.yml
+
 # Eclipse files
 .project

@@ -42,14 +42,14 @@ class Ability
   # User not logged in
   def guest
     can :read, [Challenge, ChallengeGroup, User]
-    cannot :show, Challenge
+    cannot :goto, Challenge
     cannot :complete, Challenge
   end
   
   # Basic user, no roles
   def user
     guest # inherits from guest
-    can :show, Challenge
+    can :goto, Challenge
     can :complete, Challenge
   end
   

@@ -8,7 +8,7 @@ class Challenge < ActiveRecord::Base
   
   belongs_to :challenge_group
   
-  has_many :flags
+  has_many :challenge_flags
   
   has_many :user_completed_challenges
   has_many :users_completed, :class_name => "User", :through => :user_completed_challenges, :source => :user

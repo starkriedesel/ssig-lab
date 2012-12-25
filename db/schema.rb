@@ -11,7 +11,18 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121212234942) do
+ActiveRecord::Schema.define(:version => 20121225091427) do
+
+  create_table "challenge_flags", :id => false, :force => true do |t|
+    t.integer  "user_id"
+    t.integer  "challenge_id"
+    t.string   "value"
+    t.string   "nonce"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  add_index "challenge_flags", ["user_id", "challenge_id"], :name => "index_flags_on_user_id_and_challenge_id", :unique => true
 
   create_table "challenge_groups", :force => true do |t|
     t.string   "name"
@@ -32,17 +43,6 @@ ActiveRecord::Schema.define(:version => 20121212234942) do
   end
 
   add_index "challenges", ["challenge_group_id"], :name => "index_challenges_on_challenge_group_id"
-
-  create_table "flags", :id => false, :force => true do |t|
-    t.integer  "user_id"
-    t.integer  "challenge_id"
-    t.string   "value"
-    t.string   "nonce"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
-  end
-
-  add_index "flags", ["user_id", "challenge_id"], :name => "index_flags_on_user_id_and_challenge_id", :unique => true
 
   create_table "roles", :force => true do |t|
     t.string   "name"

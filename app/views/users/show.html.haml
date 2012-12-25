@@ -59,7 +59,7 @@
       
   .span5
     %h5 Flags
-    - if @user.flags.any?
+    - if @user.challenge_flags.any?
       %table{:class=>'table'}
         %thead
           %tr
@@ -67,7 +67,7 @@
             %th Challenge
             %th Flag
         %tbody
-          - @user.flags.each do |f|
+          - @user.challenge_flags.each do |f|
             %tr
               %td= link_to f.challenge.challenge_group.name, f.challenge.challenge_group
               %td= link_to f.challenge.name, f.challenge

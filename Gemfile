@@ -1,6 +1,8 @@
 source :rubygems
 source :gemcutter
 
+gem 'bundler'
+
 gem 'rails', '3.2.9'
 
 # Bundle edge Rails instead:
@@ -10,7 +12,7 @@ gem 'rails', '3.2.9'
 gem 'sqlite3'
 gem 'mysql2'
 gem 'composite_primary_keys' ,'~> 5.0.10'
-gem 'query_reviewer', :git => 'git://github.com/nesquena/query_reviewer.git'
+#gem 'query_reviewer', :git => 'git://github.com/nesquena/query_reviewer.git'
 
 # User Management
 gem 'devise'

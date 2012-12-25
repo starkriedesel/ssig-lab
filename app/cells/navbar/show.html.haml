@@ -21,7 +21,8 @@
             %li{class: ((link[:active]?'active':'') +' '+ (link[:sublinks].any? ? 'dropdown' : ''))}
               %a{class: (link[:sublinks].any? ? 'dropdown-toggle' : ''), href: link[:url]}
                 = name
-                %b.caret
+                - if link[:sublinks].any?
+                  %b.caret
               - if link[:sublinks].any?
                 %ul.dropdown-menu
                   - link[:sublinks].each_pair do |sub_name, sub_link|

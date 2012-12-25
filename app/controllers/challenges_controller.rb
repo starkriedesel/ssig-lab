@@ -6,9 +6,12 @@ class ChallengesController < ApplicationController
   def index
   end
 
-  # GET /challenges/:id
   def show
-    @flag = Flag.generate_flag!(current_user.id, @challenge.id)
+  end
+
+  # GET /challenges/:id/goto
+  def goto
+    @flag = ChallengeFlag.generate_flag!(current_user.id, @challenge.id)
   end
   
   # GET /challenges/new
@@ -61,12 +64,12 @@ class ChallengesController < ApplicationController
   # POST /challenges/:id/complete
   def complete
     @challenge = Challenge.find(params[:id])
-    @flag = Flag.find([current_user.id, @challenge.id])
+    @flag = ChallengeFlag.find([current_user.id, @challenge.id])
     
     # Correct flag
     if @flag.value == params[:flag]
       @flag.destroy
-      if not current_user.completed_challenges.find(@challenge.id).nil?
+      if current_user.completed_challenges.include? @challenge
         flash[:notice] = "That was correct, but you have already completed '#{@challenge.name}'"
       else
         current_user.completed_challenges << @challenge;

@@ -13,6 +13,7 @@ SsigLab::Application.routes.draw do
   # Challenges
   resources :challenge_groups, :path => 'challengeGroups'
   resources :challenges
+  get '/challenges/:id/goto' => 'challenges#goto', :as => :challenge_goto
   post '/challenges/:id/complete' => "challenges#complete", :as => :challenge_complete
   get '/challenges/new/:group_id' => 'challenges#new', :as => :new_challenge_with_group
   

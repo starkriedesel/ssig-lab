@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
   has_and_belongs_to_many :roles
   
   # Flags
-  has_many :flags
+  has_many :challenge_flags
   
   # Completed Challenges (Many to Many)
   has_many :user_completed_challenges
