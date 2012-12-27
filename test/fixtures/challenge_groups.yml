@@ -1,7 +1,16 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
-one:
-  name: MyString
+basic_group:
+  id: 1
+  name: Basic Challenges
+  description: Just some basic stuff
 
-two:
-  name: MyString
+app_group:
+  id: 2
+  name: Application Challenges
+  description: Compiled application cracking
+
+stego_group:
+  id: 3
+  name: Stegonography Challenges
+  description: Picture hacking, Apollo's specialty

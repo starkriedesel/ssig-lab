@@ -40,11 +40,7 @@ class ChallengesController < ApplicationController
   def update
     if @challenge.update_attributes(params[:challenge])
       flash[:notice] = "Challenge '#{@challenge.name}' was successfully updated"
-      if @challenge.challenge_group.nil?
-        redirect_to challenge_groups_path
-      else
-        redirect_to @challenge.challenge_group
-      end
+      redirect_to @challenge
     else
       render :action => 'edit'
     end

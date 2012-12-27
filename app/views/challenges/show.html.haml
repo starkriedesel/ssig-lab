@@ -20,7 +20,10 @@
     %td= @challenge.points
   %tr
     %th Description
-    %td= @challenge.description
+    %td= @challenge.description_html
+  %tr
+    %th Hint
+    %td= @challenge.hint
 
 .btn-toolbar
   .btn-group

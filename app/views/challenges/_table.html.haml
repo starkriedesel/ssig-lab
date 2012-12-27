@@ -4,9 +4,7 @@
       - if user_signed_in?
         %th Completed
       %th Challenge Name
-      %th Description
       %th Points
-      %th Hint
       %th Complete Count
       - if can? [:update, :destroy], Challenge
         %th Manage
@@ -25,11 +23,7 @@
           - else
             = c.name
         %td
-          = c.description
-        %td
           = c.points
-        %td
-          = c.hint
         %td
           = c.users_completed.count
         - if can? [:update, :destroy], Challenge

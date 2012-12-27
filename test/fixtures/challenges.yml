@@ -1,13 +1,43 @@
 # Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
 
-one:
-  name: MyString
-  group_id: MyString
-  url: MyString
-  description: MyString
+basic_1:
+  id: 11
+  name: Comments Are Supper Secret
+  challenge_group_id: 1
+  url: https://ssig-lab.dyndns-ip.com:81/challenges/basic/1/index.php
+  description: This is a really basic challenge
 
-two:
-  name: MyString
-  group_id: MyString
-  url: MyString
-  description: MyString
+basic_2:
+  id: 12
+  name: Simple JS Injection
+  challenge_group_id: 1
+  url: https://ssig-lab.dyndns-ip.com:81/challenges/basic/2/index.php
+  description: This challenge is slighly less basic
+
+basic_3:
+  id: 13
+  name: Simple SQL Injection
+  challenge_group_id: 1
+  url: https://ssig-lab.dysndns-ip.com81/challenges/basic/3/index.php
+  description: OMG Its SQL
+
+app_1:
+  id: 21
+  name: Linux C++ App
+  challenge_group_id: 2
+  url: https://ssig-lab.dysndns-ip.com81/challenges/app/1/app1.zip
+  description: A simple C++ app made on linux. 32 bit
+
+app_2:
+  id: 22
+  name: M$ C# App
+  challenge_group_id: 2
+  url: https://ssig-lab.dysndns-ip.com81/challenges/app/2/app2.zip
+  description: A simple C# app made on micro$oft window$
+
+stego_1:
+  id: 31
+  name: PNG Fever
+  challenge_group_id: 3
+  url: https://ssig-lab.dysndns-ip.com81/challenges/stego/1/stego1.png
+  description: Check the chunks

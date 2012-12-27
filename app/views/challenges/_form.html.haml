@@ -25,7 +25,7 @@
     .control-group{style:''}
       .controls
         %label.checkbox
-          %input{:type=>'checkbox'}
+          = f.check_box :use_markdown
           Use Markdown
     %hr
     .control-group{class: (@challenge.errors[:hint].any? ? 'warning':'')}

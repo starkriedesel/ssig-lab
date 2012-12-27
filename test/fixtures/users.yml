@@ -6,9 +6,21 @@
 #
 
 admin:
+  id: 1
   username: admin
   email: admin@example.com
 
-user:
-  username: user
-  email: user@example.com
+moderator:
+  id: 2
+  username: moderator
+  email: mod@example.com
+
+user_1:
+  id: 11
+  username: user1
+  email: user1@example.com
+
+user_2:
+  id: 12
+  username: user2
+  email: user2@example.com
