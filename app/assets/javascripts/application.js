@@ -14,6 +14,19 @@
 //= require jquery_ujs
 //= require bootstrap
 //= require prettify
+//= require jquery_nested_form
 //= require_tree .
 
-$(document).ready(function() { prettyPrint(); });
+// Use prettyprint for code blocks
+$(function() { prettyPrint(); });
+
+// Show Bootstrap style tooltips for any thing with rel="tooltip"
+$(function() { $('[rel=tooltip]').tooltip(); });
+
+// NestForms - Boostrap compatability
+$(function() {
+  window.NestedFormEvents.prototype.insertFields = function(content, assoc, link) {
+    var $location = $(link).closest('div.control-group');
+    return $(content).insertBefore($location);
+  };
+});

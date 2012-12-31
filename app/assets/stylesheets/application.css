@@ -53,3 +53,7 @@ ul.nav li.dropdown:hover ul.dropdown-menu {
 a.menu:after, .dropdown-toggle:after {
   content: none;
 }
+
+.unread_msgs_color {
+  color: #62C462;
+}

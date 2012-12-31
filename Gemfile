@@ -23,12 +23,14 @@ gem 'haml'
 gem 'haml-rails'
 gem 'rdiscount'
 gem 'markdown-rails'
+gem 'RedCloth'
 
 # View Components for Rails.
 gem 'cells'
 
 # Form generator
 gem 'formtastic'
+gem 'nested_form'
 
 # Gems used only for assets and not required
 # in production environments by default.

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121225091427) do
+ActiveRecord::Schema.define(:version => 20121228073118) do
 
   create_table "challenge_flags", :id => false, :force => true do |t|
     t.integer  "user_id"
@@ -66,6 +66,23 @@ ActiveRecord::Schema.define(:version => 20121225091427) do
   add_index "user_completed_challenges", ["challenge_id"], :name => "index_user_completed_challenges_on_challenge_id"
   add_index "user_completed_challenges", ["user_id", "challenge_id"], :name => "index_user_completed_challenges_on_user_id_and_challenge_id", :unique => true
   add_index "user_completed_challenges", ["user_id"], :name => "index_user_completed_challenges_on_user_id"
+
+  create_table "user_message_contents", :force => true do |t|
+    t.integer  "user_id"
+    t.string   "from_name"
+    t.string   "subject"
+    t.text     "content"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  create_table "user_messages", :force => true do |t|
+    t.integer  "user_message_content_id"
+    t.integer  "user_id"
+    t.boolean  "read"
+    t.datetime "created_at",              :null => false
+    t.datetime "updated_at",              :null => false
+  end
 
   create_table "users", :force => true do |t|
     t.string   "username",               :default => "", :null => false

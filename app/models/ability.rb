@@ -51,11 +51,21 @@ class Ability
     guest # inherits from guest
     can :goto, Challenge
     can :complete, Challenge
+
+    # Messages
+    can [:read, :destroy], UserMessage, :user_id=>@user.id
+    can :create, UserMessage
+    cannot :multi_send, UserMessage # Send multiple to multiple users
+    cannot :system_send, UserMessage # Send messages from "System" users
   end
   
   # Site Administrator
   def admin
     user
     can :manage, :all
+
+    # Messages
+    can :multi_send, UserMessage
+    can :system_send, UserMessage
   end
 end

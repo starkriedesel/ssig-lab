@@ -25,6 +25,12 @@ class NavbarCell < Cell::Rails
         checkActive(sub_link)
       end
     end
+
+    # Check for mail
+    @unread_msgs = 0
+    if user_signed_in?
+      @unread_msgs = UserMessage.where(user_id: current_user.id, read: false).count
+    end
     
     render
   end

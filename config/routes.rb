@@ -1,14 +1,15 @@
 SsigLab::Application.routes.draw do
+  # Root dir
+  root :to => 'pages#home'
+
+  # Devise
   devise_for :users
-  
   devise_scope :user do
     delete '/logout' => 'devise/sessions#destroy', :as => :destroy_user_session
     get '/login' => 'devise/sessions#new', :as => :new_user_session
     post '/login' => 'devise/sessions#create', :as => :user_session
     get '/register' => 'devise/registrations#new', :as => :new_user_registration
   end
-  
-  root :to => 'pages#home'
   
   # Challenges
   resources :challenge_groups, :path => 'challengeGroups'
@@ -17,8 +18,13 @@ SsigLab::Application.routes.draw do
   post '/challenges/:id/complete' => "challenges#complete", :as => :challenge_complete
   get '/challenges/new/:group_id' => 'challenges#new', :as => :new_challenge_with_group
   
+  # Users
   get '/users/:id' => 'users#show', :as => :user
   get '/users/:id/admin_challenge_edit' => 'users#admin_challenge_edit', :as => :user_admin_challenge_edit
+
+  # User Messages
+  resources :user_messages
+  get '/user_messages/:id/reply' => 'user_messages#reply', :as => :reply_user_message
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
