@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20121228073118) do
+ActiveRecord::Schema.define(:version => 20121231072349) do
 
   create_table "challenge_flags", :id => false, :force => true do |t|
     t.integer  "user_id"
@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(:version => 20121228073118) do
     t.text     "hint"
     t.datetime "created_at",         :null => false
     t.datetime "updated_at",         :null => false
+    t.integer  "flag_type"
   end
 
   add_index "challenges", ["challenge_group_id"], :name => "index_challenges_on_challenge_group_id"
