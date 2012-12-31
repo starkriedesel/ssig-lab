@@ -1,0 +1,26 @@
+%h3
+  Subject:
+  = @user_message.user_message_content.subject
+  - if not @user_message.read
+    %span.label.label-success New
+
+%h4
+  From: 
+  - if @user_message.user_message_content.from_name.blank?
+    = link_to @user_message.user_message_content.user.username, @user_message.user_message_content.user
+  - else
+    = @user_message.user_message_content.from_name
+
+.well
+  = @user_message.user_message_content.content
+
+.btn-toolbar
+  .btn-group
+    = link_to "Back", user_messages_path, :class => 'btn'
+  .btn-group
+    - if @user_message.user_message_content.from_name.blank?
+      = link_to "Reply", reply_user_message_path(@user_message), :class => 'btn btn-success'
+  .btn-group
+    - if can? :destroy, @user_message
+      = link_to 'Delete', @user_message, :class=>'btn btn-danger', :method=>:delete
+

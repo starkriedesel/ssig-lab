@@ -1,0 +1,32 @@
+= render :partial => 'layouts/form_errors', :locals => {:form_model => @user_message_content }
+
+%h1 New Message
+
+= form_for @user_message_content, :url => user_messages_path, :html => {:class => "form-horizontal"} do |f|
+  %fieldset.span7.well
+    - if can? :system_send, UserMessage
+      .control-group
+        = f.label :from_name, 'From', :class=>'control-label'
+        .controls
+          = f.text_field :from_name
+    .control-group
+      %label.control-label To
+      .controls
+        = text_field_tag 'recipients', params[:recipients]
+    .control-group
+      = f.label :subject, :class=>'control-label'
+      .controls
+        = f.text_field :subject
+    .control-group
+      =f.label :content, :class=>'control-label'
+      .controls
+        = f.text_area :content
+    /
+      .control-group
+      %label.control-label To
+      .controls
+        = f.collection_select(:user_id,User.all,:id,:username,{:prompt=>true})
+
+    .control-group
+      .controls
+        = f.submit 'Send', :class=>'btn btn-primary'

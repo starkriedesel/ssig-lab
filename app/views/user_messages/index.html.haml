@@ -1,0 +1,28 @@
+%h1 Messages
+
+%table.table
+  %thead
+    %tr
+      %th
+      %th From
+      %th Subject
+      %th Date Recieved
+
+  - @user_messages.each do |user_message|
+    %tr
+      %td
+        - if not user_message.read
+          %span.label.label-success NEW
+      %td
+        - if user_message.user_message_content.from_name.blank?
+          = link_to user_message.user_message_content.user.username, user_message.user_message_content.user
+        - else
+          = user_message.user_message_content.from_name
+      %td= link_to user_message.user_message_content.subject, user_message
+      %td= user_message.created_at
+
+.btn-toolbar
+  .btn-group
+    - if can? :new, UserMessage
+      = link_to "New Message", new_user_message_path, :class => 'btn btn-success'
+
