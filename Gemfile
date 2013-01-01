@@ -8,6 +8,18 @@ gem 'rails', '3.2.9'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
+# RSpec for test/development
+gem 'rspec-rails', :group => [:test, :development]
+group :test do
+  gem 'capybara'
+  #gem 'cucumber-rails'
+   # gem 'database_cleaner'
+  gem 'guard'
+    gem 'guard-rspec'
+    #gem 'guard-cucumber'
+    gem 'rb-inotify'
+end
+
 # Databases
 gem 'sqlite3'
 gem 'mysql2'
