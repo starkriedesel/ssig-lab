@@ -83,5 +83,3 @@ module MarkdownSupport
     end
   end
 end
-
-ActiveRecord::Base.extend MarkdownSupport

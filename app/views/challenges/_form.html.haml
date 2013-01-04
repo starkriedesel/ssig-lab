@@ -1,5 +1,5 @@
 = form_for @challenge, :html => {:class => "form-horizontal"} do |f|
-  %fieldset.span5.well
+  %fieldset.span7.well
     .control-group{class: (@challenge.errors[:challenge_group_id].any? ? 'warning':'')}
       = f.label :challenge_group_id, :class=>'control-label'
       .controls
@@ -18,10 +18,40 @@
       = f.label :points, :class=>"control-label"
       .controls
         = f.text_field :points
+    .control-group{class: (@challenge.errors[:flag_type].any? ? 'warning':'')}
+      = f.label :flag_type, :class=>"control-label"
+      .controls
+        = f.select(:flag_type,Challenge::FLAG_TYPES.map { |s,i| [ActiveSupport::Inflector::humanize(s.to_s),i] },{:prompt=>true})
+    .control-group#flag_data_single{style: 'display:none'}
+      %label.control-label Single Flag
+      .controls
+        = text_field_tag 'challenge[flag_data][single]', @challenge.flag_data[:single]
+    .control-group#flag_data_set{style: 'display:none'}
+      %label.control-label Flag List
+      #flag_data_set_fields
+        .controls
+          = text_field_tag 'challenge[flag_data][set][]', nil, :class=>'flag_data_set_field'
+          = button_to_function 'Remove', 'removeFlagDataSetValue(this)'
+      .controls
+        = button_to_function 'Add Flag', 'addFlagDataSetValue()'
+    .control-group#flag_data_regex{style: 'display:none'}
+      %label.control-label Flag Regex
+      .controls
+        = text_field_tag 'challenge[flag_data][regex]', @challenge.flag_data[:regex]
+    .control-group#flag_data_ruby_gen{style: 'display:none'}
+      %label.control-label Ruby Flag Generator
+      .controls
+        def gen()
+        = text_area_tag 'challenge[flag_data][ruby_gen]', (@challenge.flag_data[:ruby_gen] || 'return true'), :rows=>5
+    .control-group#flag_data_ruby_check{style: 'display:none'}
+      %label.control-label Ruby Flag Checker
+      .controls
+        def check(flag_value)
+        = text_area_tag 'challenge[flag_data][ruby_check', (@challenge.flag_data[:ruby_check] || "return flag_value == 'xxxxxxxxx'"), :rows=>5
     .control-group{class: (@challenge.errors[:description].any? ? 'warning':'')}
       = f.label :description, :class=>"control-label"
       .controls
-        = f.text_area :description, :rows=>5, :style=>'width:90%'
+        = f.text_area :description, :rows=>5
     .control-group
       .controls
         %label.checkbox
@@ -31,7 +61,7 @@
     .control-group{class: (@challenge.errors[:hint].any? ? 'warning':'')}
       = f.label :hint, :class=>"control-label"
       .controls
-        = f.text_area :hint, :rows=>5, :style=>'width:90%'
+        = f.text_area :hint, :rows=>5
     .control-group
       .controls
         %label.checkbox
@@ -45,4 +75,50 @@
           = f.submit "Update", :class=> 'btn btn-primary'
         - else
           = f.submit "Submit", :class=> 'btn btn-primary'
-          
+:javascript
+  var flag_types = #{Challenge::FLAG_TYPES.keys.to_json};
+  var flag_set_values = #{@challenge.flag_data[:set].to_json};
+  var flag_set_html = '';
+  var flag_set_size = 1;
+
+  /* Display the correct flag data fields */
+  function displayFlagDataFields()
+  {
+    n = $('#challenge_flag_type').val();
+    for(var i=0; i<flag_types.length; ++i)
+    {
+      $('#flag_data_'+flag_types[i]).hide();
+    }
+    $('#flag_data_'+flag_types[n]).show();
+  }
+
+  function addFlagDataSetValue()
+  {
+    $('#flag_data_set_fields').append(flag_set_html);
+    flag_set_size += 1;
+  }
+
+  function removeFlagDataSetValue(btn_dom)
+  {
+    if(flag_set_size <= 1)
+      return;
+    $(btn_dom).parent('.controls').remove();
+    flag_set_size -= 1;
+  }
+
+  /* On Flag Type Changes */
+  $('#challenge_flag_type').change(displayFlagDataFields);
+
+  /* OnLoad */
+  $(function() {
+    flag_set_html = $('#flag_data_set_fields').html();
+
+    for(var i=1; i<flag_set_values.length; ++i)
+      addFlagDataSetValue();
+
+    var set_fields = $('.flag_data_set_field');
+    for(var i=0; i<flag_set_values.length; ++i)
+      set_fields.eq(i).val(flag_set_values[i])
+
+    displayFlagDataFields();
+  });

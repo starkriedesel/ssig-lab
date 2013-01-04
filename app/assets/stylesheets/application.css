@@ -54,6 +54,11 @@ a.menu:after, .dropdown-toggle:after {
   content: none;
 }
 
+/* User Messages */
 .unread_msgs_color {
   color: #62C462;
+}
+
+div.control-group div.controls textarea {
+  width: 90%;
 }
