@@ -42,12 +42,12 @@
       %label.control-label Ruby Flag Generator
       .controls
         def gen()
-        = text_area_tag 'challenge[flag_data][ruby_gen]', (@challenge.flag_data[:ruby_gen] || 'return true'), :rows=>5
+        = text_area_tag 'challenge[flag_data][ruby_gen]', (@challenge.flag_data[:ruby_gen]), :rows=>5
     .control-group#flag_data_ruby_check{style: 'display:none'}
       %label.control-label Ruby Flag Checker
       .controls
         def check(flag_value)
-        = text_area_tag 'challenge[flag_data][ruby_check', (@challenge.flag_data[:ruby_check] || "return flag_value == 'xxxxxxxxx'"), :rows=>5
+        = text_area_tag 'challenge[flag_data][ruby_check', (@challenge.flag_data[:ruby_check]), :rows=>5
     .control-group{class: (@challenge.errors[:description].any? ? 'warning':'')}
       = f.label :description, :class=>"control-label"
       .controls

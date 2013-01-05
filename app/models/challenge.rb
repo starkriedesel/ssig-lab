@@ -21,12 +21,17 @@ class Challenge < ActiveRecord::Base
   # Callbacls
   after_initialize :default_values
   after_initialize :flag_data_check
+  after_update :clear_flags_on_update
   
   # Associations
   belongs_to :challenge_group
   has_many :challenge_flags
   has_many :user_completed_challenges
   has_many :users_completed, :class_name => "User", :through => :user_completed_challenges, :source => :user
+
+  def flag_type_name
+    Challenge::FLAG_TYPES.key self.flag_type
+  end
 
   private
   def default_values # Sets the default values (both for Model.new and Model.find)
@@ -59,6 +64,11 @@ class Challenge < ActiveRecord::Base
     flag_data[section] ||= ''
     if not flag_data[section].kind_of? String
       flag_data[section] = flag_data[section].try(:to_s) || ''
+    end
+  end
+  def clear_flags_on_update
+    if self.flag_type_changed? or self.flag_data_changed?
+      ChallengeFlag.destroy_all(:challenge_id => self.id)
     end
   end
 end

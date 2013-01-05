@@ -11,7 +11,7 @@ class ChallengesController < ApplicationController
 
   # GET /challenges/:id/goto
   def goto
-    @flag = ChallengeFlag.generate_flag!(current_user.id, @challenge.id)
+    @flag = ChallengeFlag.generate_flag!(current_user.id, @challenge)
   end
   
   # GET /challenges/new
