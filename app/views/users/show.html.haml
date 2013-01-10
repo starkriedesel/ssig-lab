@@ -13,7 +13,7 @@
         %td= @user[:id]
       %tr
         %th Points Total
-        %td= @user.completed_challenges.sum(:points)
+        %td= @user.points
       %tr
         %th Current Login
         %td= @user[:current_sign_in_at]

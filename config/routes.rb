@@ -25,6 +25,11 @@ SsigLab::Application.routes.draw do
   # User Messages
   resources :user_messages
   get '/user_messages/:id/reply' => 'user_messages#reply', :as => :reply_user_message
+  
+  # Leaderboards
+  get '/leaderboard' => 'leaderboards#index', :as => :leaderboard
+  get '/leaderboard/challenge/:challenge_id' => 'leaderboards#index', :as => :leaderboard_challenge
+  get '/leaderboard/challenge_group/:challenge_group_id' => 'leaderboards#index', :as => :leaderboard_challenge_group
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

@@ -41,8 +41,10 @@ module MarkdownSupport
     def markdown_find
       self.class.markdown_attr_list.each do |attr_name|
         source_code = %Q{
-          self.#{attr_name}_use_markdown = self.class.check_with_markdown self.#{attr_name} 
-          self.#{attr_name}= self.class.load_with_markdown self.#{attr_name}, self.#{attr_name}_use_markdown
+          if self.#{attr_name}?
+            self.#{attr_name}_use_markdown = self.class.check_with_markdown self.#{attr_name}
+            self.#{attr_name}= self.class.load_with_markdown self.#{attr_name}, self.#{attr_name}_use_markdown
+          end
         }
         instance_eval source_code
       end

@@ -13,6 +13,7 @@
 .btn-toolbar
   .btn-group
     = link_to 'Challenge Groups', challenge_groups_path, :class=>'btn'
+    = link_to 'Leaderboard', leaderboard_challenge_group_path(@challenge_group.id), :class=>'btn'
   .btn-group
     - if can? :create, Challenge
       = link_to 'New Challenge', new_challenge_with_group_path(@challenge_group.id), :class=>'btn btn-primary'

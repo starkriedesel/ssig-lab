@@ -30,6 +30,9 @@
     - if can? :goto, @challenge
       = link_to "Go", challenge_goto_path(@challenge), :class => 'btn btn-primary'
   .btn-group
+    = link_to 'Challenge Group', @challenge.challenge_group, :class=>'btn'
+    = link_to 'Leaderboard', leaderboard_challenge_path(@challenge.id), :class=>'btn'
+  .btn-group
     - if can? :update, @challenge
       = link_to "Edit", edit_challenge_path(@challenge), :class => 'btn btn-warning'
     - if can? :destroy, @challenge

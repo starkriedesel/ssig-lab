@@ -35,10 +35,11 @@ class Challenge < ActiveRecord::Base
 
   private
   def default_values # Sets the default values (both for Model.new and Model.find)
-    self.flag_type ||= Challenge::DEFAULT_FLAG_TYPE
-    self.flag_data ||= {}
+    self.flag_type ||= Challenge::DEFAULT_FLAG_TYPE if self.flag_type?
+    self.flag_data ||= {} if self.flag_data?
   end
   def flag_data_check # Checks the flag_data var for proper contruction
+    return if not self.flag_data?
     if not self.flag_data.kind_of? Hash
       self.flag_data = {}
     end

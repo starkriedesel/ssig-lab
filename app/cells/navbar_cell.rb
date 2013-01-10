@@ -9,7 +9,8 @@ class NavbarCell < Cell::Rails
       Home: {url: root_path},
       Register: {url: new_user_registration_path, condition: (not user_signed_in?)},
       Challenges: {url: challenge_groups_path},
-      Profile: {url: user_signed_in? ? user_path(current_user[:id]) : '', condition: (user_signed_in?)}
+      Profile: {url: user_signed_in? ? user_path(current_user[:id]) : '', condition: (user_signed_in?)},
+      Leaderboard: {url: leaderboard_path}
     }
     
     @nav_links[:Challenges][:sublinks] = {}

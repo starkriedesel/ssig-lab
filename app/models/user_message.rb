@@ -9,8 +9,10 @@ class UserMessage < ActiveRecord::Base
 
   after_initialize :normalize_read
   after_find :normalize_read
+  
+  private
   def normalize_read
-    if self.read.nil?
+    if self.read? and self.read.nil?
       self.read = false
     end
   end

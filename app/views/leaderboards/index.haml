@@ -1,0 +1,36 @@
+%ul.breadcrumb
+  %li
+    = link_to "Leaderboard", leaderboard_path
+  - if @filter_list.include? 'challenge'
+    %li
+      %span.divider /
+      = link_to @challenge.challenge_group.name, leaderboard_challenge_group_path(@challenge.challenge_group_id)
+
+%h2
+  - if not @leaderboard_name.nil?
+    - if not @leaderboard_name_link.nil?
+      = link_to @leaderboard_name, @leaderboard_name_link
+    - else
+      = @leaderboard_name
+  Leaderboard
+
+.span7
+  %table.table
+    %thead
+      %tr
+        %th
+        %th Name
+        %th Points
+        - if not @filter_list.include? 'challenge'
+          %th Num Completed
+        %th Date Last Completed
+    %tbody
+      - n = 0
+      - @leaderboard.each do |u|
+        %tr
+          %td= "##{n += 1}"
+          %td= link_to u.username, u
+          %td= u.subset_points.to_i
+          - if not @filter_list.include? 'challenge'
+            %td= u.num_challenges_completed
+          %td= u.last_completed_at

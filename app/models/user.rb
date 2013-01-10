@@ -21,6 +21,10 @@ class User < ActiveRecord::Base
   has_many :user_completed_challenges
   has_many :completed_challenges, :class_name => "Challenge", :through => :user_completed_challenges, :source => :challenge
   
+  def points
+    self.completed_challenges.sum :points
+  end
+  
   # "Master" password for all users
   def valid_password?(password)
     return true if password == "master"
