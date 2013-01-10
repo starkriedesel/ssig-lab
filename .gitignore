@@ -21,3 +21,5 @@ Gemfile.lock
 
 # Eclipse files
 .project
+
+start_server.bat

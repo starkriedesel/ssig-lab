@@ -3,6 +3,11 @@ class ChallengeGroupsController < ApplicationController
   
   # GET /challengeGroups
 	def index
+	  if user_signed_in?
+	    @num_complete = current_user.completed_challenges.group(:challenge_group_id).count
+      @subset_points = Challenge.where(:id => current_user.completed_challenges.select {|x| x.id}).group(:challenge_group_id).sum(:points)
+	  end
+	  @group_totals = Challenge.group(:challenge_group_id).sum(:points)
 	end
 	
 	# GET /challengeGroups/:id

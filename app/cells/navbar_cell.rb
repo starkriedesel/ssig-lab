@@ -30,7 +30,7 @@ class NavbarCell < Cell::Rails
     # Check for mail
     @unread_msgs = 0
     if user_signed_in?
-      @unread_msgs = UserMessage.where(user_id: current_user.id, read: false).count
+      @unread_msgs = UserMessage.unread.where(user_id: current_user.id).count
     end
     
     render

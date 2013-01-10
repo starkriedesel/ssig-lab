@@ -6,11 +6,10 @@
       %th Challenge Name
       %th Points
       %th Complete Count
-      - if can? [:update, :destroy], Challenge
-        %th Manage
+      %th
   %tbody
     - @challenges.each do |c|
-      %tr
+      %tr{class: ((current_user.completed_challenges.include? c) ? 'success' : '')}
         - if user_signed_in?
           %td
             - if current_user.completed_challenges.include? c
@@ -26,10 +25,10 @@
           = c.points
         %td
           = c.users_completed.count
-        - if can? [:update, :destroy], Challenge
-          %td
-            .btn-group
-              - if can? :update, c
-                = link_to 'Edit', edit_challenge_path(c), :class=>'btn btn-warning'
-              - if can? :destroy, c
-                = link_to 'Remove', challenge_path(c), :class=>'btn btn-danger', :method=>:delete
+        %td
+          .btn-group
+            = link_to 'Leaderboard', leaderboard_challenge_path(c), :class=>'btn'
+            - if can? :update, c
+              = link_to 'Edit', edit_challenge_path(c), :class=>'btn btn-warning'
+            - if can? :destroy, c
+              = link_to 'Remove', challenge_path(c), :class=>'btn btn-danger', :method=>:delete

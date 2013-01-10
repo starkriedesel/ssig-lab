@@ -13,8 +13,6 @@ class Challenge < ActiveRecord::Base
   validates :challenge_group_id, :presence => true
   validates :url, :presence => true, :format => {:with => /^https?:\/\/.+$/}
   validates :points, :presence => true, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0 }
-  validates :flag_type, :presence => true
-  validates :flag_data, :presence => true
 
   serialize :flag_data, Hash
 
@@ -35,8 +33,8 @@ class Challenge < ActiveRecord::Base
 
   private
   def default_values # Sets the default values (both for Model.new and Model.find)
-    self.flag_type ||= Challenge::DEFAULT_FLAG_TYPE if self.flag_type?
-    self.flag_data ||= {} if self.flag_data?
+    self.flag_type ||= Challenge::DEFAULT_FLAG_TYPE
+    self.flag_data ||= {}
   end
   def flag_data_check # Checks the flag_data var for proper contruction
     return if not self.flag_data?

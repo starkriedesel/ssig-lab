@@ -9,17 +9,29 @@
       - if can? [:update,:destroy], ChallengeGroup
         %th Manage
   %tbody
-    %tr
+    %tr.challenge_group
     - @challenge_groups.each do |cg|
-      %tr
+      %tr{class: (@num_complete[cg.id.to_s] == cg.challenges.count ? 'success' : '')}
         %td
           = link_to cg.name, challenge_group_path(cg.id)
         %td
           = cg.description
         %td
-          = cg.challenges.count
+          - if user_signed_in?
+            %span.label.fraction
+              %span.numerator= @num_complete[cg.id.to_s] || 0
+              %span /
+              %span.denominator= cg.challenges.count
+          - else
+            = cg.challenges.count
         %td
-          = cg.challenges.sum(:points)
+          - if user_signed_in?
+            %span.label.fraction
+              %span.numerator= @subset_points[cg.id.to_s] || 0
+              %span /
+              %span.denominator= @group_totals[cg.id.to_s]
+          - else
+            = @group_totals[cg.id.to_s]
         - if can? [:update,:destroy], ChallengeGroup
           %td
             .btn-group
@@ -39,3 +51,14 @@
       = link_to 'New Group', new_challenge_group_path, :class=>'btn btn-primary'
     - if can? :create, Challenge
       = link_to 'New Challenge', new_challenge_path, :class=>'btn btn-primary'
+
+:javascript
+  $(function() {
+    $('.label.fraction').each(function(n,label) {
+      obj = $(label);
+      n = obj.find('.numerator').html();
+      d = obj.find('.denominator').html();
+      if( n == d )
+        obj.addClass('label-success');
+    });
+  });

@@ -8,6 +8,12 @@ gem 'rails', '3.2.9'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
+# Thin webserver to replace WebBrick
+gem 'thin'
+
+# Profiler
+gem 'rack-mini-profiler'
+
 # Rails 4.0 packages
 gem 'turbolinks' # No load links
 

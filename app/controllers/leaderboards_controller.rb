@@ -7,13 +7,14 @@ class LeaderboardsController < ApplicationController
 	  @leaderboard = User.joins(:user_completed_challenges, :user_completed_challenges => :challenge)
 	                     .select('users.*, MAX(user_completed_challenges.created_at) as last_completed_at, COUNT(user_completed_challenges.challenge_id) as num_challenges_completed, SUM(challenges.points) as subset_points')
                        .group('users.id')
+                       .order('subset_points DESC, last_completed_at ASC')
 	  
 	  # Create filters
 	  filter_by_challenge_id params[:challenge_id] unless params[:challenge_id].nil?
 	  filter_by_challenge_group_id params[:challenge_group_id] unless params[:challenge_group_id].nil?
 	  
 	  # Fina all users that meet criteria
-	  @leaderboard = @leaderboard.order('subset_points DESC').all
+	  @leaderboard = @leaderboard.all
 	end
 	
 	private
