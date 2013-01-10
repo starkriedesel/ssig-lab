@@ -8,6 +8,9 @@ gem 'rails', '3.2.9'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git'
 
+# Rails 4.0 packages
+gem 'turbolinks' # No load links
+
 # RSpec for test/development
 gem 'rspec-rails', :group => [:test, :development]
 group :test do
