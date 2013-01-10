@@ -27,7 +27,7 @@
     %tbody
       - n = 0
       - @leaderboard.each do |u|
-        %tr
+        %tr{class: ((user_signed_in? and u.id == current_user.id) ? 'success' : '')}
           %td= "##{n += 1}"
           %td= link_to u.username, u
           %td= u.subset_points.to_i
