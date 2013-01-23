@@ -17,6 +17,7 @@ SsigLab::Application.routes.draw do
   get '/challenges/:id/goto' => 'challenges#goto', :as => :challenge_goto
   post '/challenges/:id/complete' => "challenges#complete", :as => :challenge_complete
   get '/challenges/new/:group_id' => 'challenges#new', :as => :new_challenge_with_group
+  get '/challenges/:id/show_hint/:challenge_hint_id' => 'challenges#show_hint', :as => :challenge_show_hint
   
   # Users
   get '/users/:id' => 'users#show', :as => :user

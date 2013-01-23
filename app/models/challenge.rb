@@ -2,11 +2,11 @@ class Challenge < ActiveRecord::Base
   FLAG_TYPES = {none: 0, random: 1, set: 2, single: 3, regex: 4, ruby_gen: 5, ruby_check: 6}
   DEFAULT_FLAG_TYPE = FLAG_TYPES[:random]
 
-  attr_accessible :name, :description, :challenge_group_id, :url, :points, :hint, :flag_type, :flag_data
+  attr_accessible :name, :description, :challenge_group_id, :url, :points, :flag_type, :flag_data
 
-  # Markdown support for Description & Hint
+  # Markdown support for Description
   extend MarkdownSupport
-  with_markdown :description, :hint
+  with_markdown :description
 
   # Validations
   validates :name, :presence => true
@@ -26,6 +26,11 @@ class Challenge < ActiveRecord::Base
   has_many :challenge_flags
   has_many :user_completed_challenges
   has_many :users_completed, :class_name => "User", :through => :user_completed_challenges, :source => :user
+  has_many :challenge_hints
+  
+  def opened_hints_for_user(user)
+    user.challenge_hints.where(:id => self.challenge_hints.select("id"))
+  end
 
   def flag_type_name
     Challenge::FLAG_TYPES.key self.flag_type
@@ -33,8 +38,15 @@ class Challenge < ActiveRecord::Base
 
   private
   def default_values # Sets the default values (both for Model.new and Model.find)
-    self.flag_type ||= Challenge::DEFAULT_FLAG_TYPE
-    self.flag_data ||= {}
+    # Ignore missing attribute errors
+    begin
+      self.flag_type ||= Challenge::DEFAULT_FLAG_TYPE
+    rescue ActiveModel::MissingAttributeError
+    end
+    begin
+      self.flag_data ||= {}
+    rescue ActiveModel::MissingAttributeError
+    end
   end
   def flag_data_check # Checks the flag_data var for proper contruction
     return if not self.flag_data?

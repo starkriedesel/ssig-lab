@@ -12,10 +12,11 @@
 //
 //= require jquery
 //= require jquery_ujs
+//= require jquery.turbolinks
+//= require turbolinks
 //= require bootstrap
 //= require prettify
 //= require jquery_nested_form
-//= require turbolinks
 //= require_tree .
 
 // Use prettyprint for code blocks

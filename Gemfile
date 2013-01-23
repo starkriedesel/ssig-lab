@@ -16,6 +16,7 @@ gem 'rack-mini-profiler'
 
 # Rails 4.0 packages
 gem 'turbolinks' # No load links
+gem 'jquery-turbolinks' # Fix for jquery
 
 # RSpec for test/development
 gem 'rspec-rails', :group => [:test, :development]

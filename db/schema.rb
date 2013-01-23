@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130104080312) do
+ActiveRecord::Schema.define(:version => 20130119064142) do
 
   create_table "challenge_flags", :id => false, :force => true do |t|
     t.integer  "user_id"
@@ -31,13 +31,25 @@ ActiveRecord::Schema.define(:version => 20130104080312) do
     t.datetime "updated_at",  :null => false
   end
 
+  create_table "challenge_hints", :force => true do |t|
+    t.integer  "challenge_id"
+    t.text     "hint_text"
+    t.integer  "cost"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
+  end
+
+  create_table "challenge_hints_users", :id => false, :force => true do |t|
+    t.integer "challenge_hint_id"
+    t.integer "user_id"
+  end
+
   create_table "challenges", :force => true do |t|
     t.string   "name"
     t.string   "challenge_group_id"
     t.string   "url"
     t.string   "description"
     t.integer  "points"
-    t.text     "hint"
     t.datetime "created_at",         :null => false
     t.datetime "updated_at",         :null => false
     t.integer  "flag_type"
@@ -56,6 +68,16 @@ ActiveRecord::Schema.define(:version => 20130104080312) do
     t.integer "role_id"
     t.integer "user_id"
   end
+
+  create_table "sessions", :force => true do |t|
+    t.string   "session_id", :null => false
+    t.text     "data"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
+
+  add_index "sessions", ["session_id"], :name => "index_sessions_on_session_id"
+  add_index "sessions", ["updated_at"], :name => "index_sessions_on_updated_at"
 
   create_table "user_completed_challenges", :force => true do |t|
     t.integer  "user_id"
@@ -100,6 +122,7 @@ ActiveRecord::Schema.define(:version => 20130104080312) do
     t.string   "last_sign_in_ip"
     t.datetime "created_at",                             :null => false
     t.datetime "updated_at",                             :null => false
+    t.integer  "points",                 :default => 0
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

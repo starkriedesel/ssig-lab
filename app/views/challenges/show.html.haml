@@ -21,9 +21,8 @@
   %tr
     %th Description
     %td= @challenge.description_html
-  %tr
-    %th Hint
-    %td= @challenge.hint_html
+
+= render 'hints'
 
 .btn-toolbar
   .btn-group

@@ -14,7 +14,7 @@ class UserMessage < ActiveRecord::Base
   
   private
   def normalize_read
-    if self.read? and self.read.nil?
+    if self.read.nil?
       self.read = false
     end
   end

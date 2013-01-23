@@ -1,0 +1,35 @@
+- if user_signed_in?
+  - user_completed_challenge = current_user.completed_challenges.include? @challenge
+  - num_hints = @challenge.challenge_hints.count
+  
+  - if num_hints > 0
+    - hints_for_user = @challenge.opened_hints_for_user(current_user).all
+    - points_lost = hints_for_user.map{|h| h.cost}.sum
+    - num_hints_for_user = hints_for_user.length
+    - show_hints = []
+     
+    - if user_completed_challenge
+      - show_hints =  @challenge.challenge_hints
+    - else
+      - show_hints = hints_for_user
+      
+    %div
+      %h3{:style=>'display:inline'} Hints
+      %small
+        %strong
+          = "(#{num_hints_for_user} of #{num_hints} used || #{points_lost} points detracted)"
+    - if show_hints.length > 0
+      %table.table
+        - n = 0
+        - show_hints.each do |h|
+          %tr{class:((hints_for_user.include? h) ? 'info' : '')}
+            %td
+              %strong
+                = "Hint ##{n+=1}"
+              %small
+                = "(cost #{h.cost} points): "
+              = h.hint_text
+              
+    - if num_hints_for_user < num_hints and not user_completed_challenge
+      - new_hint = @challenge.challenge_hints[hints_for_user.count]
+      = link_to "Show Hint (#{new_hint.cost} points)", challenge_show_hint_path(@challenge,new_hint.id), :class=>'btn', :confirm=>"Are you sure you want to see a hint? It will cost #{new_hint.cost} points."

@@ -1,5 +1,8 @@
 class ChallengesController < ApplicationController
+  # Controler authorized actions by Cancan
   load_and_authorize_resource
+  
+  # Skip the CSRF protection for Challenges#Complete because data is being posted by apache server
   skip_before_filter :verify_authenticity_token, :only=>:complete
   
   # GET /challenges
@@ -69,6 +72,7 @@ class ChallengesController < ApplicationController
         flash[:notice] = "That was correct, but you have already completed '#{@challenge.name}'"
       else
         current_user.completed_challenges << @challenge;
+        current_user.points += @challenge.points - (@challenge.opened_hints_for_user(current_user).sum(:cost))
         if current_user.save
           flash[:success] = "You completed '#{@challenge.name}' and recieved #{@challenge.points} points!";
         else
@@ -83,6 +87,25 @@ class ChallengesController < ApplicationController
       redirect_to @challenge.challenge_group
       return
     end
+  end
+  
+  def show_hint
+    if user_signed_in?
+      if not current_user.completed_challenges.include? @challenge
+        hints_for_user = @challenge.opened_hints_for_user current_user
+        num_hints = @challenge.challenge_hints.count
+        if hints_for_user.count < num_hints
+          new_hint = @challenge.challenge_hints[hints_for_user.count]
+          if new_hint.id.to_s == params[:challenge_hint_id]
+            current_user.challenge_hints << new_hint
+            flash[:info] = "Hint for challenge '#{@challenge.name} shown. You will recieve #{new_hint.cost} fewer points for completing this challenge."
+          end
+        end
+      else
+        flash[:error] = "Cannot show hint for challenge already completed"
+      end
+    end
+    redirect_to @challenge
   end
 end
 

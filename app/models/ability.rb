@@ -44,6 +44,7 @@ class Ability
     can :read, [Challenge, ChallengeGroup, User]
     cannot :goto, Challenge
     cannot :complete, Challenge
+    cannot :show_hint, Challenge
   end
   
   # Basic user, no roles
@@ -51,6 +52,7 @@ class Ability
     guest # inherits from guest
     can :goto, Challenge
     can :complete, Challenge
+    can :show_hint, Challenge
 
     # Messages
     can [:read, :destroy], UserMessage, :user_id=>@user.id

@@ -9,7 +9,7 @@
       %th
   %tbody
     - @challenges.each do |c|
-      %tr{class: ((current_user.completed_challenges.include? c) ? 'success' : '')}
+      %tr{class: ((user_signed_in? and current_user.completed_challenges.include? c) ? 'success' : '')}
         - if user_signed_in?
           %td
             - if current_user.completed_challenges.include? c

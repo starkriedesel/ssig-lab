@@ -15,20 +15,50 @@ other_group = ChallengeGroup.create({name: 'Other', description: 'Some extra cha
 
 UserCompletedChallenge.destroy_all
 ChallengeFlag.destroy_all
+ChallengeHint.destroy_all
 
 Challenge.destroy_all
 Challenge.reset_pk_sequence
-basic1_chall = Challenge.create({name: 'Basic 1', description: 'Break into this cool thingy', hint: 'Source code often hides secrets', points: 10, challenge_group: basic_group, url: challenge_server+'/challenges/basic/1/index.php'}, :without_protection => true)
-basic2_chall = Challenge.create({name: 'Basic 2', description: 'Break into this other cool thingy', hint: 'Javascript is client side', points: 15, challenge_group: basic_group, url: challenge_server+'/challenges/basic/2/index.php'}, :without_protection => true)
-basic3_chall = Challenge.create({name: 'Basic 3', description: 'So Hard!', hint: 'Check the headers', points: 20, challenge_group: basic_group, url: challenge_server+'/challenges/basic/3/index.php'}, :without_protection => true)
-app1_chall = Challenge.create({name: 'App 1', description: 'Tried my hand at some basic c++', hint: "Check the methods being used for comparisons", points: 25, challenge_group: app_group, url: challenge_server+'/challenges/apps/1/index.php'}, :without_protection => true)
-app2_chall = Challenge.create({name: 'App 2', description: 'Some C#', hint: 'C# tends to keep more info in the executable than is safe', points: 15, challenge_group: app_group, url: challenge_server+'/challenges/apps/2/index.php'}, :without_protection => true)
+basic1_chall = Challenge.create({
+  name: 'Basic 1',
+  description: 'Break into this cool thingy',
+  points: 10,
+  challenge_group: basic_group,
+  url: "#{challenge_server}/challenges/basic/1/index.php"
+}, without_protection: true)
+basic2_chall = Challenge.create({
+  name: 'Basic 2',
+  description: 'Break into this other cool thingy',
+  points: 15,
+  challenge_group: basic_group,
+  url: "#{challenge_server}/challenges/basic/2/index.php"
+}, without_protection: true)
+basic3_chall = Challenge.create({
+  name: 'Basic 3',
+  description: 'So Hard!',
+  points: 20,
+  challenge_group: basic_group,
+  url: "#{challenge_server}/challenges/basic/3/index.php"
+}, without_protection: true)
+app1_chall = Challenge.create({
+  name: 'App 1',
+  description: 'Tried my hand at some basic c++',
+  points: 25,
+  challenge_group: app_group,
+  url: "#{challenge_server}/challenges/apps/1/index.php"
+}, without_protection: true)
+app2_chall = Challenge.create({
+  name: 'App 2',
+  description: 'Some C#',
+  points: 15,
+  challenge_group: app_group,
+  url: "#{challenge_server}/challenges/apps/2/index.php"
+}, without_protection: true)
 other_challs = []
 (1..10).each { |n|
   c = Challenge.new({
     name: "Other #{n}",
     description: "Other challenge ##{n}",
-    hint: "No hint...",
     points: (10 * n),
     challenge_group: other_group,
     url: "#{challenge_server}/challenges/other/#{n}/",

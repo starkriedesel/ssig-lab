@@ -58,15 +58,6 @@
           = f.check_box :description_use_markdown
           Use Markdown
     %hr
-    .control-group{class: (@challenge.errors[:hint].any? ? 'warning':'')}
-      = f.label :hint, :class=>"control-label"
-      .controls
-        = f.text_area :hint, :rows=>5
-    .control-group
-      .controls
-        %label.checkbox
-          = f.check_box :hint_use_markdown
-          Use Markdown
     .control-group
       .controls
         - if params[:action] == 'new'
