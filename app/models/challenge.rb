@@ -29,7 +29,7 @@ class Challenge < ActiveRecord::Base
   has_many :challenge_hints
   
   # Nested Form Associations
-  accepts_nested_attributes_for :challenge_hints
+  accepts_nested_attributes_for :challenge_hints, allow_destroy: true, reject_if: proc {|attr| attr['cost'].to_i < 0 or attr['hint_text'].blank?}
   
   def opened_hints_for_user(user)
     user.challenge_hints.where(:id => self.challenge_hints.select("id"))

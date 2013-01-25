@@ -58,20 +58,25 @@
           Use Markdown
   %fieldset.span7.well
     %h4 Hints
-    = f.fields_for :challenge_hints do |ff|
-      .control-group
-        %label.control-label Text
-        .controls
-          = ff.text_area :hint_text, rows: 5
-          %br
-          %label.checkbox
-            = ff.check_box :hint_text_use_markdown
-            Use Markdown
-      .control-group
-        %label.control-label Cost
-        .controls
-          = ff.text_field :cost
-      %hr
+    - @challenge.challenge_hints.each do |hint|
+      = render partial: 'hint_form', locals: {hint: hint }
+    /
+      = f.fields_for :challenge_hints do |ff|
+        .control-group
+          %label.control-label Text
+          .controls
+            = ff.text_area :hint_text, rows: 5
+            %br
+            %label.checkbox
+              = ff.check_box :hint_text_use_markdown
+              Use Markdown
+        .control-group
+          %label.control-label Cost
+          .controls
+            = ff.text_field :cost
+    .new_hint_html{style:'display:none'}
+      = render partial: 'hint_form', locals: {hint: @challenge.challenge_hints.build}
+    .new_hints
     = button_to_function 'Add', 'addHint()', class: 'btn'
   %fieldset.span7
     .control-group
@@ -135,10 +140,21 @@
   var hint_values = #{@challenge.challenge_hints.map{|h| {id: h.id, text: h.hint_text, cost: h.cost}}.to_json}
   var hint_html = '';
   
-  function addHint()
-  {
-    hint_html = $('#)
+  function addHint() {
+    $('.new_hints').append(hint_html);
+  }
+
+  function removeHint(btn) {
+    hint_div = $(btn).parents('.hint');
+    if(hint_div.find('#challenge_challenge_hints_attributes__id')) {
+      hint_div.find('#challenge_challenge_hints_attributes___destroy').val(1);
+      hint_div.hide();
+    }
+    else {
+      hint_div.hide();
+    }
   }
   
   $(function() {
-  }
+    hint_html = $('.new_hint_html').html();
+  });

@@ -1,0 +1,21 @@
+.hint
+  .control-group
+    - if hint.id?
+      = hidden_field_tag "challenge[challenge_hints_attributes][][id]", hint.id
+      = hidden_field_tag "challenge[challenge_hints_attributes][][_destroy]", 0
+    %label.control-label Text
+    .controls
+      = text_area_tag "challenge[challenge_hints_attributes][][hint_text]", hint.hint_text,rows: 5
+      %br
+      %label.checkbox
+        = check_box_tag "challenge[challenge_hints_attributes][][hint_text_use_markdown]", hint.hint_text_use_markdown
+        Use Markdown
+  .control-group
+    %label.control-label Cost
+    .controls
+      = text_field_tag  "challenge[challenge_hints_attributes][][cost]", hint.cost
+  .control-group
+    .controls
+      = button_to_function 'Remove','removeHint(this)',class:'btn btn-danger'
+  %hr
+
