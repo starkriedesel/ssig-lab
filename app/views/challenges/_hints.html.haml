@@ -28,7 +28,7 @@
                 = "Hint ##{n+=1}"
               %small
                 = "(cost #{h.cost} points): "
-              = h.hint_text
+              = h.hint_text_html
               
     - if num_hints_for_user < num_hints and not user_completed_challenge
       - new_hint = @challenge.challenge_hints[hints_for_user.count]

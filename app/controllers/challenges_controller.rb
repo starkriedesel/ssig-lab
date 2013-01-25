@@ -41,7 +41,9 @@ class ChallengesController < ApplicationController
   
   # PUT /challenges/:id
   def update
+    logger.debug "Update before: #{params[:challenge]}"
     if @challenge.update_attributes(params[:challenge])
+      logger.debug "Update after: #{@challenge.challenge_hints[0].hint_text_use_markdown}"
       flash[:notice] = "Challenge '#{@challenge.name}' was successfully updated"
       redirect_to @challenge
     else

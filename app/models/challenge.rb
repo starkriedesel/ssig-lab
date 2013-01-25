@@ -2,7 +2,7 @@ class Challenge < ActiveRecord::Base
   FLAG_TYPES = {none: 0, random: 1, set: 2, single: 3, regex: 4, ruby_gen: 5, ruby_check: 6}
   DEFAULT_FLAG_TYPE = FLAG_TYPES[:random]
 
-  attr_accessible :name, :description, :challenge_group_id, :url, :points, :flag_type, :flag_data
+  attr_accessible :name, :description, :challenge_group_id, :url, :points, :flag_type, :flag_data, :challenge_hints_attributes
 
   # Markdown support for Description
   extend MarkdownSupport
@@ -27,6 +27,9 @@ class Challenge < ActiveRecord::Base
   has_many :user_completed_challenges
   has_many :users_completed, :class_name => "User", :through => :user_completed_challenges, :source => :user
   has_many :challenge_hints
+  
+  # Nested Form Associations
+  accepts_nested_attributes_for :challenge_hints
   
   def opened_hints_for_user(user)
     user.challenge_hints.where(:id => self.challenge_hints.select("id"))

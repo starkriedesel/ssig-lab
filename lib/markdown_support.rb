@@ -19,7 +19,7 @@ module MarkdownSupport
     new_attrs = attr_names - self.markdown_attr_list
     new_attrs.first.each do |attr_name|
       send :define_method, "#{attr_name}_html" do
-       instance_eval "self.class.show_with_markdown self.#{attr_name}, self.#{attr_name}_use_markdown"
+        instance_eval "self.class.show_with_markdown self.#{attr_name}, self.#{attr_name}_use_markdown"
       end
       send :attr_accessor, "#{attr_name}_use_markdown"
       send :attr_accessible, "#{attr_name}_use_markdown"

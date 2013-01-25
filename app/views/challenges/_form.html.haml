@@ -51,13 +51,29 @@
     .control-group{class: (@challenge.errors[:description].any? ? 'warning':'')}
       = f.label :description, :class=>"control-label"
       .controls
-        = f.text_area :description, :rows=>5
-    .control-group
-      .controls
+        = f.text_area :description, rows: 5
+        %br
         %label.checkbox
           = f.check_box :description_use_markdown
           Use Markdown
-    %hr
+  %fieldset.span7.well
+    %h4 Hints
+    = f.fields_for :challenge_hints do |ff|
+      .control-group
+        %label.control-label Text
+        .controls
+          = ff.text_area :hint_text, rows: 5
+          %br
+          %label.checkbox
+            = ff.check_box :hint_text_use_markdown
+            Use Markdown
+      .control-group
+        %label.control-label Cost
+        .controls
+          = ff.text_field :cost
+      %hr
+    = button_to_function 'Add', 'addHint()', class: 'btn'
+  %fieldset.span7
     .control-group
       .controls
         - if params[:action] == 'new'
@@ -66,6 +82,7 @@
           = f.submit "Update", :class=> 'btn btn-primary'
         - else
           = f.submit "Submit", :class=> 'btn btn-primary'
+
 :javascript
   var flag_types = #{Challenge::FLAG_TYPES.keys.to_json};
   var flag_set_values = #{@challenge.flag_data[:set].to_json};
@@ -113,3 +130,15 @@
 
     displayFlagDataFields();
   });
+
+:javascript
+  var hint_values = #{@challenge.challenge_hints.map{|h| {id: h.id, text: h.hint_text, cost: h.cost}}.to_json}
+  var hint_html = '';
+  
+  function addHint()
+  {
+    hint_html = $('#)
+  }
+  
+  $(function() {
+  }
