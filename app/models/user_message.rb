@@ -1,5 +1,5 @@
 class UserMessage < ActiveRecord::Base
-  attr_accessible :read, :user_id, :user_message_content_id
+  #attr_accessible :read, :user_id, :user_message_content_id
 
   validates :user_id, :presence => true
   #validates :user_message_content_id, :presence => true

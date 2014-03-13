@@ -1,5 +1,7 @@
 class LeaderboardsController < ApplicationController
 	def index
+    authorize! :show, User
+
 	  # Initialize data
 	  @filter_list = []
 	  @filter_wheres = []

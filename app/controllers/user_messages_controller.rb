@@ -96,4 +96,8 @@ class UserMessagesController < ApplicationController
     flash[:error] = err_str
     render action: action
   end
+
+  def user_messages_params
+    params[:user_message_content]
+  end
 end

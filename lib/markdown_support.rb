@@ -22,7 +22,6 @@ module MarkdownSupport
         instance_eval "self.class.show_with_markdown self.#{attr_name}, self.#{attr_name}_use_markdown"
       end
       send :attr_accessor, "#{attr_name}_use_markdown"
-      send :attr_accessible, "#{attr_name}_use_markdown"
       self.markdown_attr_list << attr_name
     end
   end

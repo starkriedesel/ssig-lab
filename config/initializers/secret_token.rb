@@ -1,7 +1,2 @@
-# Be sure to restart your server when you modify this file.
-
-# Your secret key for verifying the integrity of signed cookies.
-# If you change this key, all old signed cookies will become invalid!
-# Make sure the secret is at least 30 characters and all random,
-# no regular words or you'll be exposed to dictionary attacks.
-SsigLab::Application.config.secret_token = '760f9653b5f462caac32057ea74fd4e64086d25a656f49aa3eb65fbdedb345761e3c2b013543d5094456668cc9af26ed8aa07054185294706384fa2a20981da5'
+CtfLab::Application.config.secret_token = '8f360f86e03c5fb04b30d6ddb0b638a2fe9173e7b88ea06905a17b152158ee0a75053a4cebe46ca87433d8de684a567d50cb2ecf488eb78067fa92a860d85613'
+CtfLab::Application.config.secret_key_base = '9c4871f08f254ef93eb7d7c87d5f1ca8fb26f5a90f9eaf1bd7cc518746f41a23b309593a15f49643a40c59e861b7aa5f351e97ed3162765798c766a0ff9261c0'

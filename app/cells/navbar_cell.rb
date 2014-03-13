@@ -3,14 +3,15 @@ class NavbarCell < Cell::Rails
   include Devise::Controllers::Helpers
   helper_method :user_signed_in?
   helper_method :current_user
+  include CanCan::ControllerAdditions
   
   def show
     @nav_links = {
       Home: {url: root_path},
-      Register: {url: new_user_registration_path, condition: (not user_signed_in?)},
-      Challenges: {url: challenge_groups_path},
+      Register: {url: registration_path, condition: (not user_signed_in?)},
+      Challenges: {url: challenge_groups_path, condition: (can? :read, Challenge)},
       Profile: {url: user_signed_in? ? user_path(current_user[:id]) : '', condition: (user_signed_in?)},
-      Leaderboard: {url: leaderboard_path}
+      Leaderboard: {url: leaderboard_path, condition: (can? :read, User)}
     }
     
     @nav_links[:Challenges][:sublinks] = {}

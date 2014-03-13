@@ -2,9 +2,16 @@
 %html
   %head
     %title SSigLab
+    %meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    %link(rel="shortcut icon" href="/favicon.png")
     = stylesheet_link_tag 'application', :media=>'all'
     = javascript_include_tag 'application'
     = csrf_meta_tags
+    :plain
+      <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+      <!--[if lt IE 9]>
+        <script src="../assets/js/html5shiv.js"></script>
+      <![endif]-->
   %body
     = #render 'layouts/navbar' unless @disable_navbar
     = render_cell :navbar, :show

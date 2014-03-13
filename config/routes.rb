@@ -1,27 +1,33 @@
-SsigLab::Application.routes.draw do
+CtfLab::Application.routes.draw do
+  get "flag/destroy"
   # Root dir
   root :to => 'pages#home'
 
   # Devise
-  devise_for :users
+  devise_for :users, skip: [:sessions, :registrations]
   devise_scope :user do
-    delete '/logout' => 'devise/sessions#destroy', :as => :destroy_user_session
-    get '/login' => 'devise/sessions#new', :as => :new_user_session
-    post '/login' => 'devise/sessions#create', :as => :user_session
-    get '/register' => 'devise/registrations#new', :as => :new_user_registration
+    delete '/logout' => 'devise/sessions#destroy', :as => :logout
+    get '/login' => 'devise/sessions#new', :as => :login
+    post '/login' => 'devise/sessions#create'
+    get '/register' => 'devise/registrations#new', :as => :registration
+    post '/register' => 'devise/registrations#create'
   end
   
   # Challenges
   resources :challenge_groups, :path => 'challengeGroups'
   resources :challenges
   get '/challenges/:id/goto' => 'challenges#goto', :as => :challenge_goto
-  post '/challenges/:id/complete' => "challenges#complete", :as => :challenge_complete
   get '/challenges/new/:group_id' => 'challenges#new', :as => :new_challenge_with_group
   get '/challenges/:id/show_hint/:challenge_hint_id' => 'challenges#show_hint', :as => :challenge_show_hint
+  post '/challenges/:id/complete' => 'challenges#complete', :as => :challenge_complete
+  get '/challenges/:id/complete' => 'challenges#complete'
   
   # Users
   get '/users/:id' => 'users#show', :as => :user
   get '/users/:id/admin_challenge_edit' => 'users#admin_challenge_edit', :as => :user_admin_challenge_edit
+
+  # Flags
+  delete '/flags/:id' => 'challenge_flags#destroy', as: :challenge_flag
 
   # User Messages
   resources :user_messages

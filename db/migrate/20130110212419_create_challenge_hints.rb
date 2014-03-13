@@ -3,7 +3,7 @@ class CreateChallengeHints < ActiveRecord::Migration
     create_table :challenge_hints do |t|
       t.integer :challenge_id
       t.text :hint_text
-      t.integer :cost
+      t.integer :cost, default: 0
 
       t.timestamps
     end

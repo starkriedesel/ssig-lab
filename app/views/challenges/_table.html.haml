@@ -4,10 +4,11 @@
       - if user_signed_in?
         %th Completed
       %th Challenge Name
-      %th Points
-      %th Complete Count
+      %th Points Recieved / Total Points
+      %th # Users Completed
       %th
   %tbody
+    - hint_costs = current_user.challenge_hints.where(challenge_id: @challenges.map(&:id)).group(:challenge_id).sum(:cost)
     - @challenges.each do |c|
       %tr{class: ((user_signed_in? and current_user.completed_challenges.include? c) ? 'success' : '')}
         - if user_signed_in?
@@ -22,7 +23,11 @@
           - else
             = c.name
         %td
-          = c.points
+          - if current_user.completed_challenge_ids.include? c.id
+            = c.points - (hint_costs[c.id] || 0)
+          - else
+            0
+          = "/ #{c.points}"
         %td
           = c.users_completed.count
         %td

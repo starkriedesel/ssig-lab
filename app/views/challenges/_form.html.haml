@@ -27,7 +27,7 @@
       .controls
         = text_field_tag 'challenge[flag_data][single]', @challenge.flag_data[:single]
     .control-group#flag_data_set{style: 'display:none'}
-      %label.control-label Flag List
+      %label.control-label Set
       #flag_data_set_fields
         .controls
           = text_field_tag 'challenge[flag_data][set][]', nil, :class=>'flag_data_set_field'
@@ -59,7 +59,7 @@
   %fieldset.span7.well
     %h4 Hints
     - @challenge.challenge_hints.each do |hint|
-      = render partial: 'hint_form', locals: {hint: hint }
+      = render partial: 'hint_form', locals: {hint: hint}
     /
       = f.fields_for :challenge_hints do |ff|
         .control-group
@@ -75,7 +75,7 @@
           .controls
             = ff.text_field :cost
     .new_hint_html{style:'display:none'}
-      = render partial: 'hint_form', locals: {hint: @challenge.challenge_hints.build}
+      = render partial: 'hint_form', locals: {hint: ChallengeHint.new}
     .new_hints
     = button_to_function 'Add', 'addHint()', class: 'btn'
   %fieldset.span7
@@ -90,7 +90,7 @@
 
 :javascript
   var flag_types = #{Challenge::FLAG_TYPES.keys.to_json};
-  var flag_set_values = #{@challenge.flag_data[:set].to_json};
+  var flag_set_values = #{(@challenge.flag_data[:set] || []).to_json};
   var flag_set_html = '';
   var flag_set_size = 1;
 
@@ -102,6 +102,8 @@
     {
       $('#flag_data_'+flag_types[i]).hide();
     }
+    if(n == #{Challenge::FLAG_TYPES[:any_set]})
+      n = #{Challenge::FLAG_TYPES[:set]};
     $('#flag_data_'+flag_types[n]).show();
   }
 
@@ -137,8 +139,8 @@
   });
 
 :javascript
-  var hint_values = #{@challenge.challenge_hints.map{|h| {id: h.id, text: h.hint_text, cost: h.cost}}.to_json}
-  var hint_html = '';
+  var hint_values = #{@challenge.challenge_hints.map{|h| {id: h.id, text: h.hint_text, cost: h.cost}}.to_json};
+  var hint_html = $('new_hint_html').innerHtml;
   
   function addHint() {
     $('.new_hints').append(hint_html);
@@ -146,12 +148,14 @@
 
   function removeHint(btn) {
     hint_div = $(btn).parents('.hint');
-    if(hint_div.find('#challenge_challenge_hints_attributes__id')) {
+    console.log(hint_div.find('#challenge_challenge_hints_attributes__id').length > 0);
+    if(hint_div.find('#challenge_challenge_hints_attributes__id').length > 0) {
       hint_div.find('#challenge_challenge_hints_attributes___destroy').val(1);
       hint_div.hide();
     }
     else {
-      hint_div.hide();
+    console.log('remove');
+      hint_div.remove();
     }
   }
   

@@ -11,24 +11,24 @@
 // GO AFTER THE REQUIRES BELOW.
 //
 //= require jquery
-//= require jquery_ujs
 //= require jquery.turbolinks
+//= require jquery_ujs
+//= require twitter/bootstrap
 //= require turbolinks
 //= require bootstrap
-//= require prettify
-//= require jquery_nested_form
+//= require jquery.xcolor.min
 //= require_tree .
 
-// Use prettyprint for code blocks
-$(function() { prettyPrint(); });
-
-// Show Bootstrap style tooltips for any thing with rel="tooltip"
-$(function() { $('[rel=tooltip]').tooltip(); });
-
-// NestForms - Boostrap compatability
-$(function() {
-  window.NestedFormEvents.prototype.insertFields = function(content, assoc, link) {
-    var $location = $(link).closest('div.control-group');
-    return $(content).insertBefore($location);
-  };
+$(function () {
+    $('.label.fraction').each(function (n, label) {
+        var obj = $(label);
+        var n = parseInt(obj.find('.numerator').html());
+        var d = parseInt(obj.find('.denominator').html());
+        if(d == 0)
+            d = 1;
+        var color = $.xcolor.gradientlevel('#999', '#468847', n, d);
+        //if (n == d)
+        //    obj.addClass('label-success');
+        obj.css('background-color', color.getColor());
+    });
 });

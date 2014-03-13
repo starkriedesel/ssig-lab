@@ -1,5 +1,5 @@
 class UserMessageContent < ActiveRecord::Base
-  attr_accessible :content, :from_name, :subject, :user_messages_attributes
+  #attr_accessible :content, :from_name, :subject, :user_messages_attributes
 
   validates :content, :presence => true
   validates :subject, :presence => true

@@ -1,5 +1,5 @@
 class ChallengeFlag < ActiveRecord::Base
-  require "digest"
+  require 'digest'
   
   self.primary_keys= :user_id, :challenge_id
   
@@ -20,28 +20,39 @@ class ChallengeFlag < ActiveRecord::Base
     if [:random, :single, :set, :ruby_gen].include? flag_type
       eval "flag_str = self.generate_flag_#{flag_type}(challenge)"
     end
+    flag_str = "[#{challenge.flag_data[:set].join(',')}]" if flag_type == :any_set
     if flag_str.nil?
-      raise "ChallengeFlag cannot be generated"
+      raise 'ChallengeFlag cannot be generated'
     end
     flag = ChallengeFlag.where(:user_id => user_id, :challenge_id => challenge.id).first
     flag ||= ChallengeFlag.create({user_id: user_id, challenge_id: challenge.id, value: flag_str, nonce: generate_nonce})
     flag
   end
 
+  def check attempt
+    if challenge.flag_type == Challenge::FLAG_TYPES[:any_set]
+      return challenge.flag_data[:set].include? attempt
+    end
+    value == attempt
+  end
+
   private
   def self.generate_flag_random(challenge)
     self.generate_flag_string
   end
+
   def self.generate_flag_single(challenge)
     single_value = challenge.flag_data[:single]
     return nil unless single_value.kind_of? String and single_value.length > 0
     return single_value
   end
+
   def self.generate_flag_set(challenge)
     set_values = challenge.flag_data[:set]
     return nil unless set_values.kind_of? Array and set_values.length > 0
     return set_values.sample
   end
+
   def self.generate_flag_ruby_gen(challenge)
     gen_code = challenge.flag_data[:ruby_gen]
     flag_str = nil

@@ -27,7 +27,7 @@
         %td
           - if user_signed_in?
             %span.label.fraction
-              %span.numerator= @subset_points[cg.id.to_s] || 0
+              %span.numerator= (@subset_points[cg.id.to_s] || 0) - (@subset_costs[cg.id.to_s] || 0)
               %span /
               %span.denominator= @group_totals[cg.id.to_s]
           - else
@@ -51,14 +51,3 @@
       = link_to 'New Group', new_challenge_group_path, :class=>'btn btn-primary'
     - if can? :create, Challenge
       = link_to 'New Challenge', new_challenge_path, :class=>'btn btn-primary'
-
-:javascript
-  $(function() {
-    $('.label.fraction').each(function(n,label) {
-      obj = $(label);
-      n = obj.find('.numerator').html();
-      d = obj.find('.denominator').html();
-      if( n == d )
-        obj.addClass('label-success');
-    });
-  });

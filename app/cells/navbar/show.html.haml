@@ -8,13 +8,14 @@
 
         - if user_signed_in? # User Signed In:
           -# Logout Btn
-          = link_to 'Logout', destroy_user_session_path, :method=>:delete, :class=>'btn pull-right'
+          = link_to 'Logout', logout_path, :method=>:delete, :class=>'btn pull-right'
           -# Spacer
           %p.navbar-text.pull-right
             &nbsp;&nbsp;&nbsp;&nbsp;
           -# Messages Btn
-          %a.btn.btn-inverse.pull-right{title:pluralize(@unread_msgs, 'Message'), "data-placement"=>"bottom", rel: "tooltip", href: user_messages_path, :class=>@unread_msgs > 0 ? 'unread_msgs_color': ''}
-            %i.icon-envelope-alt
+          - if can? :read, UserMessage
+            %a.btn.btn-inverse.pull-right{title:pluralize(@unread_msgs, 'Message'), "data-placement"=>"bottom", rel: "tooltip", href: user_messages_path, :class=>@unread_msgs > 0 ? 'unread_msgs_color': ''}
+              %i.fa.fa-envelope
           -# Signed in as text
           %p.navbar-text.pull-right
             Signed in as
@@ -23,7 +24,7 @@
 
         - else # User Not Signed In:
           -# User Sign In Form
-          = form_for User.new, :as=>:user, :url=>new_user_session_path, :html=>{:class=>'navbar-form pull-right'} do |f|
+          = form_for User.new, :as=>:user, :url=>login_path, :html=>{:class=>'navbar-form pull-right'} do |f|
             = f.text_field :username, :class=>'span2', :placeholder=>'Username'
             = f.password_field :password, :class=>'span2', :placeholder=>'Password'
             = f.submit 'Sign in', :class=>'btn'

@@ -1,11 +1,3 @@
-%ul.breadcrumb
-  %li
-    = link_to "Leaderboard", leaderboard_path
-  - if @filter_list.include? 'challenge'
-    %li
-      %span.divider /
-      = link_to @challenge.challenge_group.name, leaderboard_challenge_group_path(@challenge.challenge_group_id)
-
 %h2
   - if not @leaderboard_name.nil?
     - if not @leaderboard_name_link.nil?

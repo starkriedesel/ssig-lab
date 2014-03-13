@@ -7,7 +7,8 @@ class ChallengeGroupsController < ApplicationController
 	  @subset_points = {}
 	  if user_signed_in?
 	    @num_complete = current_user.completed_challenges.group(:challenge_group_id).count
-      @subset_points = Challenge.where(:id => current_user.completed_challenges.select {|x| x.id}).group(:challenge_group_id).sum(:points)
+      @subset_points = current_user.completed_challenges.group(:challenge_group_id).sum(:points)
+      @subset_costs = current_user.challenge_hints.joins(:challenge).where(challenge_id: current_user.completed_challenges.map(&:id)).group(:challenge_group_id).sum(:cost)
 	  end
 	  @group_totals = Challenge.group(:challenge_group_id).sum(:points)
 	end
@@ -26,7 +27,7 @@ class ChallengeGroupsController < ApplicationController
   
   # POST /ChallengeGroups
   def create
-    @challenge_group = ChallengeGroup.new(params[:challenge_group])
+    @challenge_group = ChallengeGroup.new(challenge_group_params)
     if @challenge_group.save
       flash[:notice] = "Created Challenge Group '#{@challenge_group.name}'" 
       redirect_to @challenge_group
@@ -37,7 +38,7 @@ class ChallengeGroupsController < ApplicationController
   
   # PUT /ChallengeGroups/:id
   def update
-    if @challenge_group.update_attributes(params[:challenge_group])
+    if @challenge_group.update_attributes(challenge_group_params)
       flash[:notice] = "Challenge Group '#{@challenge_group.name}' was successfully updated"
       redirect_to @challenge_group
     else
@@ -53,5 +54,10 @@ class ChallengeGroupsController < ApplicationController
     end
     @challenge_group.destroy
     redirect_to challenge_groups_path
+  end
+
+  private
+  def challenge_group_params
+    params.require(:challenge_group).permit(:name, :description)
   end
 end
