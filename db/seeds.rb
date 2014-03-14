@@ -7,7 +7,7 @@
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
 srand(0)
-challenge_server = 'https://10.0.0.5:81'
+challenge_server = 'http://10.0.0.5'
 
 ChallengeGroup.destroy_all
 basic_group = ChallengeGroup.create({name: 'Basic', description: 'Basic Web Challenges'})
