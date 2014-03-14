@@ -20,15 +20,22 @@
 //= require_tree .
 
 $(function () {
-    $('.label.fraction').each(function (n, label) {
+    $('.label.fraction').each(function (i, label) {
         var obj = $(label);
         var n = parseInt(obj.find('.numerator').html());
         var d = parseInt(obj.find('.denominator').html());
         if(d == 0)
             d = 1;
-        var color = $.xcolor.gradientlevel('#999', '#468847', n, d);
-        //if (n == d)
-        //    obj.addClass('label-success');
-        obj.css('background-color', color.getColor());
+        if(obj.hasClass('binary')) {
+            if(n == d)
+                obj.css('background-color', '#468847');
+            else if(n != 0) {
+                var color = $.xcolor.gradientlevel('#999', '#468847', 50, 100);
+                obj.css('background-color', color.getColor());
+            }
+        } else {
+            var color = $.xcolor.gradientlevel('#999', '#468847', n, d);
+            obj.css('background-color', color.getColor());
+        }
     });
 });

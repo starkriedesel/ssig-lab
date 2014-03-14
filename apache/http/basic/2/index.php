@@ -1,6 +1,14 @@
 <?php
-  require 'include.php';
-  echo jquery_api();
+  require '../../flags.php';
+
+  if($_GET) {
+    if(basic_login_check(CHALLENGE_FLAG, 'john'))
+      die(rails_success_js_post());
+    else
+      die('Login Failed');
+  } else {
+    echo jquery_api();
+  }
 ?>
 
 <script language="javascript">
@@ -9,7 +17,7 @@
     username = $('#username').val();
     password = $('#password').val();
     if(username == "john" && password == "<?=CHALLENGE_FLAG?>")
-      window.location = 'login.php?username='+username+'&password='+password;
+      window.location = './?username='+username+'&password='+password;
     else
       alert("Incorrect username/password");
   }

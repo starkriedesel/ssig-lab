@@ -18,7 +18,7 @@
           = cg.description
         %td
           - if user_signed_in?
-            %span.label.fraction
+            %span.label.fraction.binary
               %span.numerator= @num_complete[cg.id.to_s] || 0
               %span /
               %span.denominator= cg.challenges.count

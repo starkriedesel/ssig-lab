@@ -1,7 +1,8 @@
 class ChallengesController < ApplicationController
   # Controler authorized actions by Cancan
   load_and_authorize_resource
-  
+  skip_load_resource only: [:create]
+
   # Skip the CSRF protection for Challenges#Complete because data is being posted by apache server
   skip_before_filter :verify_authenticity_token, only: :complete
   
@@ -73,7 +74,7 @@ class ChallengesController < ApplicationController
         current_user.completed_challenges << @challenge
         current_user.points += @challenge.points - (@challenge.opened_hints_for_user(current_user).sum(:cost))
         if current_user.save
-          flash[:success] = "You completed '#{@challenge.name}' and recieved #{@challenge.points} points!"
+          flash[:success] = "You completed '#{@challenge.name}' and received #{@challenge.points} points!"
         else
           flash[:error] = "There was a problem updating your completed challenges for '#{@challenge.name}'"
         end
@@ -108,7 +109,7 @@ class ChallengesController < ApplicationController
 
   private
   def challenge_params
-    params.require(:challenge).permit(:challenge_group_id, :name, :url, :points, :flag_type, :flag_data, :description, :description_use_markdown,
+    params.require(:challenge).permit(:challenge_group_id, :name, :url, :points, :flag_type, :description, :description_use_markdown,
                                       challenge_hints_attributes: [:id, :hint_text, :cost, :_destroy],
                                       flag_data: [Challenge::FLAG_TYPES.keys, set: []])
   end

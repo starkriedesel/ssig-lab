@@ -1,5 +1,5 @@
 class ChallengeFlag < ActiveRecord::Base
-  require 'digest'
+  require 'securerandom'
   
   self.primary_keys= :user_id, :challenge_id
   
@@ -11,7 +11,7 @@ class ChallengeFlag < ActiveRecord::Base
   end
   
   def self.generate_nonce
-    Digest::MD5.hexdigest(Time.now.to_s).to_s
+    SecureRandom.hex
   end
   
   def self.generate_flag!(user_id, challenge)
@@ -24,12 +24,16 @@ class ChallengeFlag < ActiveRecord::Base
     if flag_str.nil?
       raise 'ChallengeFlag cannot be generated'
     end
-    flag = ChallengeFlag.where(:user_id => user_id, :challenge_id => challenge.id).first
+    flag = ChallengeFlag.where(user_id: user_id, :challenge_id => challenge.id).first
     flag ||= ChallengeFlag.create({user_id: user_id, challenge_id: challenge.id, value: flag_str, nonce: generate_nonce})
+    if flag.nonce.blank?
+      flag.nonce = generate_nonce
+      flag.save
+    end
     flag
   end
 
-  def check attempt
+  def check(attempt)
     if challenge.flag_type == Challenge::FLAG_TYPES[:any_set]
       return challenge.flag_data[:set].include? attempt
     end
@@ -59,7 +63,6 @@ class ChallengeFlag < ActiveRecord::Base
     return nil unless gen_code.kind_of? String
     begin
       flag_str = lambda { eval gen_code }.call.to_s
-      logger.debug "flag_str = #{flag_str}"
     rescue
       flag_str = nil
     end

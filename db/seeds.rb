@@ -10,6 +10,7 @@ srand(0)
 challenge_server = 'http://10.0.0.5'
 
 ChallengeGroup.destroy_all
+ChallengeGroup.reset_pk_sequence
 basic_group = ChallengeGroup.create({name: 'Basic', description: 'Basic Web Challenges'})
 app_group = ChallengeGroup.create({name: 'Application', description: 'Application Challenges'})
 other_group = ChallengeGroup.create({name: 'Other', description: 'Some extra challenges to pad the database'})
@@ -40,6 +41,20 @@ basic3_chall = Challenge.create({
   points: 20,
   challenge_group: basic_group,
   url: "#{challenge_server}/challenges/basic/3/index.php"
+})
+basic4_chall = Challenge.create({
+  name: 'Basic 4',
+  description: 'So Hard!',
+  points: 25,
+  challenge_group: basic_group,
+  url: "#{challenge_server}/challenges/basic/4/index.php"
+})
+basic5_chall = Challenge.create({
+  name: 'Basic 5',
+  description: 'So Hard!',
+  points: 30,
+  challenge_group: basic_group,
+  url: "#{challenge_server}/challenges/basic/5/index.php"
 })
 app1_chall = Challenge.create({
   name: 'App 1',
