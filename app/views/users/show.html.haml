@@ -23,7 +23,10 @@
 
   - if can? :read, Challenge
     .span5
-      %h5 Completed Challenges
+      %h5
+        Completed Challenges
+        - if can? :manage, User
+          = link_to 'Add', '#', class:'btn btn-mini', data: {toggle: 'modal', target: '#add_challenge_modal'}
       - if @user.completed_challenges.any?
         %table{:class=>'table'}
           %thead
@@ -32,6 +35,8 @@
               %th Name
               %th Points
               %th Completed On
+              - if can? :manage, User
+                %th Actions
           %tbody
             - @user.completed_challenges.joins(:challenge_group).order('challenge_groups.name').each do |c|
               %tr
@@ -39,6 +44,8 @@
                 %td= link_to c.name, c
                 %td= "#{c.points - @user.challenge_hints.where(challenge_id: c.id).sum(:cost)} / #{c.points}"
                 %td= @user.user_completed_challenges.where('challenge_id ='+c.id.to_s).first.created_at
+                - if can? :manage, User
+                  %td= link_to 'Clear', user_clear_challenge_path(@user, c.id), method: :delete, class: 'btn btn-danger btn-mini', data: {confirm: 'Are you sure?'}
       - else
         %strong No challenges completed
 
@@ -72,6 +79,8 @@
                   %td= link_to f.challenge.name, f.challenge
                   %td= f.value
                   - if can? :delete, f
-                    %td= link_to 'Delete', f, method: :delete, class: 'btn btn-danger btn-mini'
+                    %td= link_to 'Delete', f, method: :delete, class: 'btn btn-danger btn-mini', data: {confirm: 'Are you sure?'}
         - else
           %strong No flags set
+
+= modal_dialog id: 'add_challenge_modal', header: {show_close: true, dismiss: '#add_challenge_modal', title: 'Add Challenge to User'}, body: render(partial: 'add_challenge_modal', locals: {user: @user})

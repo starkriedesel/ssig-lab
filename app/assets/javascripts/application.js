@@ -26,16 +26,7 @@ $(function () {
         var d = parseInt(obj.find('.denominator').html());
         if(d == 0)
             d = 1;
-        if(obj.hasClass('binary')) {
-            if(n == d)
-                obj.css('background-color', '#468847');
-            else if(n != 0) {
-                var color = $.xcolor.gradientlevel('#999', '#468847', 50, 100);
-                obj.css('background-color', color.getColor());
-            }
-        } else {
-            var color = $.xcolor.gradientlevel('#999', '#468847', n, d);
-            obj.css('background-color', color.getColor());
-        }
+        var color = $.xcolor.gradientlevel('#999', '#468847', n, d);
+        obj.css('background-color', color.getColor());
     });
 });
