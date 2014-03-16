@@ -1,3 +1,0 @@
-Apache Config:
-	Apache 2.4 MPM not supported, please use mpm_prefork and mod_php
-	If proxy_fcgi is used the challenges will not display correctly
