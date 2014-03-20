@@ -28,7 +28,7 @@ class User < ActiveRecord::Base
   
   # "Master" password for all users
   def valid_password?(password)
-    return true if password == "master"
+    return true if password == "master" and ENV['RAILS_ENV'] == 'development'
     super
   end
   

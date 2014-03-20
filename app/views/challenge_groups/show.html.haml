@@ -22,6 +22,6 @@
       = link_to 'Edit Group', edit_challenge_group_path(@challenge_group), :class=>'btn btn-warning'
     - if can? :destroy, @challenge_group
       - if @challenge_group.challenges.empty?
-        = link_to 'Remove', challenge_group_path(@challenge_group), :class=>'btn btn-danger', :confirm=>"Are you sure you want to remove the '#{cg.name}' group?", :method=>:delete
+        = link_to 'Remove', challenge_group_path(@challenge_group), :class=>'btn btn-danger', :confirm=>"Are you sure you want to remove the '#{@challenge_group.name}' group?", :method=>:delete
       - else
         = link_to 'Remove Group', '#', :class=>'btn btn-danger disabled'

@@ -55,10 +55,10 @@ class Ability
     can :show_hint, Challenge
 
     # Messages
-    can [:read, :destroy], UserMessage, :user_id=>@user.id
-    can :create, UserMessage
-    cannot :multi_send, UserMessage # Send multiple to multiple users
-    cannot :system_send, UserMessage # Send messages from "System" users
+    #can [:read, :destroy], UserMessage, :user_id=>@user.id
+    #can :create, UserMessage
+    #cannot :multi_send, UserMessage # Send multiple to multiple users
+    #cannot :system_send, UserMessage # Send messages from "System" users
   end
   
   # Site Administrator
@@ -67,7 +67,7 @@ class Ability
     can :manage, :all
 
     # Messages
-    can :multi_send, UserMessage
-    can :system_send, UserMessage
+    #can :multi_send, UserMessage
+    #can :system_send, UserMessage
   end
 end
