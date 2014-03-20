@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130119064142) do
+ActiveRecord::Schema.define(version: 20140320215406) do
 
   create_table "challenge_flags", id: false, force: true do |t|
     t.integer  "user_id"
@@ -22,7 +22,7 @@ ActiveRecord::Schema.define(version: 20130119064142) do
     t.datetime "updated_at"
   end
 
-  add_index "challenge_flags", ["user_id", "challenge_id"], name: "index_challenge_flags_on_user_id_and_challenge_id", unique: true
+  add_index "challenge_flags", ["user_id", "challenge_id"], name: "index_challenge_flags_on_user_id_and_challenge_id", unique: true, using: :btree
 
   create_table "challenge_groups", force: true do |t|
     t.string   "name"
@@ -43,7 +43,7 @@ ActiveRecord::Schema.define(version: 20130119064142) do
     t.string   "name"
     t.string   "challenge_group_id"
     t.string   "url"
-    t.string   "description"
+    t.text     "description"
     t.integer  "points"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -51,7 +51,7 @@ ActiveRecord::Schema.define(version: 20130119064142) do
     t.text     "flag_data"
   end
 
-  add_index "challenges", ["challenge_group_id"], name: "index_challenges_on_challenge_group_id"
+  add_index "challenges", ["challenge_group_id"], name: "index_challenges_on_challenge_group_id", using: :btree
 
   create_table "roles", force: true do |t|
     t.string   "name"
@@ -66,8 +66,8 @@ ActiveRecord::Schema.define(version: 20130119064142) do
     t.datetime "updated_at"
   end
 
-  add_index "sessions", ["session_id"], name: "index_sessions_on_session_id"
-  add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at"
+  add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", using: :btree
+  add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
 
   create_table "user_challenge_hints", force: true do |t|
     t.integer "user_id"
@@ -81,7 +81,7 @@ ActiveRecord::Schema.define(version: 20130119064142) do
     t.datetime "updated_at"
   end
 
-  add_index "user_completed_challenges", ["user_id", "challenge_id"], name: "index_user_completed_challenges_on_user_id_and_challenge_id", unique: true
+  add_index "user_completed_challenges", ["user_id", "challenge_id"], name: "index_user_completed_challenges_on_user_id_and_challenge_id", unique: true, using: :btree
 
   create_table "user_message_contents", force: true do |t|
     t.integer  "user_id"
@@ -122,8 +122,8 @@ ActiveRecord::Schema.define(version: 20130119064142) do
     t.integer  "points",                 default: 0
   end
 
-  add_index "users", ["email"], name: "index_users_on_email", unique: true
-  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-  add_index "users", ["username"], name: "index_users_on_username", unique: true
+  add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
+  add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
+  add_index "users", ["username"], name: "index_users_on_username", unique: true, using: :btree
 
 end
