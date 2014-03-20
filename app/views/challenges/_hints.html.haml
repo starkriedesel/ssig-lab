@@ -3,12 +3,12 @@
   - num_hints = @challenge.challenge_hints.count
   
   - if num_hints > 0
-    - hints_for_user = @challenge.opened_hints_for_user(current_user).all
+    - hints_for_user = current_user.challenge_hints.where(challenge_id: @challenge.id).all
     - points_lost = hints_for_user.map{|h| h.cost}.sum
     - num_hints_for_user = hints_for_user.length
-    - show_hints = hints_for_user
+    - show_hints = user_completed_challenge ? @challenge.challenge_hints.all : hints_for_user
 
-    - if show_hints.length > 0 or (num_hints > 0 and ! user_completed_challenge)
+    - if show_hints.length > 0 #or (num_hints > 0 and ! user_completed_challenge)
       %div
         %h3{:style=>'display:inline'} Hints
         %small
