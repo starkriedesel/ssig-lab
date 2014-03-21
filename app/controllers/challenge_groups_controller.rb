@@ -59,6 +59,6 @@ class ChallengeGroupsController < ApplicationController
 
   private
   def challenge_group_params
-    params.require(:challenge_group).permit(:name, :description)
+    params.require(:challenge_group).permit(:name, :description, :visible)
   end
 end

@@ -15,7 +15,9 @@ class NavbarCell < Cell::Rails
     }
     
     @nav_links[:Challenges][:sublinks] = {}
-    ChallengeGroup.all.each do |cg|
+    group_filter = ChallengeGroup
+    group_filter = group_filter.where('visible = 1')
+    group_filter.all.each do |cg|
       @nav_links[:Challenges][:sublinks][cg.name] = {url: challenge_group_path(cg)}
     end
     

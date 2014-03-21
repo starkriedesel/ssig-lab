@@ -10,6 +10,10 @@
         .controls
           = f.text_area :description, :rows=>5, :style=>'width:30%'
       .control-group
+        = f.label :visible, class: 'control-label'
+        .controls
+          = f.check_box :visible, class: 'control-label'
+      .control-group
         .controls
           - if params[:action] == 'new'
             = f.submit "Create", :class=> 'btn btn-primary'

@@ -60,3 +60,7 @@ a.menu:after, .dropdown-toggle:after {
 div.control-group div.controls textarea {
   width: 90%;
 }
+
+tr.disabled {
+  background-color: #ccc;
+}

@@ -41,7 +41,10 @@ class Ability
   
   # User not logged in
   def guest
-    can :read, [Challenge, ChallengeGroup, User]
+    can :read, ChallengeGroup, visible: true
+    can :read, Challenge, challenge_group: {visible: true}
+    can :read, User
+
     cannot :goto, Challenge
     cannot :complete, Challenge
     cannot :show_hint, Challenge
