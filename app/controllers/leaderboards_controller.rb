@@ -10,6 +10,7 @@ class LeaderboardsController < ApplicationController
 	  @leaderboard = User.joins(:user_completed_challenges, :user_completed_challenges => :challenge)
 	                     .select('users.*, MAX(user_completed_challenges.created_at) as last_completed_at, COUNT(user_completed_challenges.challenge_id) as num_challenges_completed, SUM(challenges.points) as subset_points')
                        .group('users.id')
+		       .where('users.id NOT IN(?)', Role.find_by_name('admin').users.all)
                        #.order('subset_points DESC, last_completed_at ASC')
 	  
 	  # Create filters
