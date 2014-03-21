@@ -21,7 +21,17 @@ module MarkdownSupport
       send :define_method, "#{attr_name}_html" do
         instance_eval "self.class.show_with_markdown self.#{attr_name}, self.#{attr_name}_use_markdown"
       end
-      send :attr_accessor, "#{attr_name}_use_markdown"
+      send :define_method, "#{attr_name}_use_markdown" do
+        instance_eval "@#{attr_name}_use_markdown ||= false"
+      end
+      send :define_method, "#{attr_name}_use_markdown=" do |new_value|
+        #raise 'x' if self.markdown_attr_list.include? :hint_text
+        instance_eval %Q{
+          #{attr_name}_will_change! if @#{attr_name}_use_markdown != new_value  
+          @#{attr_name}_use_markdown = new_value
+         }
+      end
+      #send :attr_accessor, "#{attr_name}_use_markdown"
       self.markdown_attr_list << attr_name
     end
   end

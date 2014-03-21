@@ -40,7 +40,8 @@ class ChallengesController < ApplicationController
   
   # PUT /challenges/:id
   def update
-    if @challenge.update_attributes(challenge_params)
+    params = challenge_params
+    if @challenge.update_attributes(params)
       @challenge.users_completed.each{|u| u.update_points} # update points for all users who completed this challenge
       flash[:notice] = "Challenge '#{@challenge.name}' was successfully updated"
       redirect_to @challenge
@@ -110,7 +111,7 @@ class ChallengesController < ApplicationController
   private
   def challenge_params
     params.require(:challenge).permit(:challenge_group_id, :name, :url, :points, :flag_type, :description, :description_use_markdown,
-                                      challenge_hints_attributes: [:id, :hint_text, :cost, :_destroy],
+                                      challenge_hints_attributes: [:id, :hint_text, :cost, :hint_text_use_markdown, :_destroy],
                                       flag_data: [Challenge::FLAG_TYPES.keys, set: []])
   end
 end
