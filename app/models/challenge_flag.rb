@@ -19,11 +19,12 @@ class ChallengeFlag < ActiveRecord::Base
     flag_str = nil
     if [:random, :single, :set, :ruby_gen].include? flag_type
       eval "flag_str = self.generate_flag_#{flag_type}(challenge)"
+    elsif flag_type == :any_set
+      flag_str = "[#{challenge.flag_data[:set].join(',')}]" 
+    elsif flag_type == :ruby_check
+      flag_str = flag_type.to_s
     end
-    flag_str = "[#{challenge.flag_data[:set].join(',')}]" if flag_type == :any_set
-    if flag_str.nil?
-      raise 'ChallengeFlag cannot be generated'
-    end
+    raise 'ChallengeFlag cannot be generated' if flag_str.nil?
     flag = ChallengeFlag.where(user_id: user_id, :challenge_id => challenge.id).first
     flag ||= ChallengeFlag.create({user_id: user_id, challenge_id: challenge.id, value: flag_str, nonce: generate_nonce})
     if flag.nonce.blank?
@@ -36,6 +37,9 @@ class ChallengeFlag < ActiveRecord::Base
   def check(attempt)
     if challenge.flag_type == Challenge::FLAG_TYPES[:any_set]
       return challenge.flag_data[:set].include? attempt
+    elsif challenge.flag_type == Challenge::FLAG_TYPES[:ruby_check]
+      check_code = challenge.flag_data[:ruby_check]
+      return !! lambda {|flag_value| eval check_code }.call(attempt)
     end
     value == attempt
   end
