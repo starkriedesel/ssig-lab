@@ -13,11 +13,13 @@
   %tbody
     - if user_signed_in?
       - hint_costs = current_user.challenge_hints.where(challenge_id: @challenges.map(&:id)).group(:challenge_id).sum(:cost)
+      - completed_challenge_ids = current_user.completed_challenge_ids
     - @challenges.each do |c|
-      %tr{class: ((user_signed_in? and current_user.completed_challenges.include? c) ? 'success' : '')}
+      - is_completed = user_signed_in? and current_user.completed_challenge_ids.include? c.id
+      %tr{class: (is_completed ? 'success' : '')}
         - if user_signed_in?
           %td
-            - if current_user.completed_challenges.include? c
+            - if is_completed
               %span.label.label-success YES
             - else
               %span.label.label NO
@@ -28,7 +30,7 @@
             = c.name
         %td
           - if user_signed_in?
-            - if current_user.completed_challenge_ids.include? c.id
+            - if is_completed
               = c.points - (hint_costs[c.id] || 0)
             - else
               0
@@ -36,7 +38,7 @@
           - else
             = c.points
         %td
-          = c.users_completed.count
+          = c.users_completed.where('user_id not in(?)', Role.find_by_name('admin').users.all.map(&:id)).count
         %td
           .btn-group
             = link_to 'Leaderboard', leaderboard_challenge_path(c), :class=>'btn'
