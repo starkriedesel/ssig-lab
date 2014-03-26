@@ -26,4 +26,7 @@ test:
 
 production:
   <<: *default
-  database: db/production.sqlite3
+  host: localhost
+  database: ssiglab_prod
+  username: ssiglab_prod
+  password: ssiglab_prod
