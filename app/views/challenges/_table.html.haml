@@ -15,7 +15,8 @@
       - hint_costs = current_user.challenge_hints.where(challenge_id: @challenges.map(&:id)).group(:challenge_id).sum(:cost)
       - completed_challenge_ids = current_user.completed_challenge_ids
     - @challenges.each do |c|
-      - is_completed = user_signed_in? and current_user.completed_challenge_ids.include? c.id
+      = current_user.completed_challenge_ids.include?(c.id)
+      - is_completed = user_signed_in? && current_user.completed_challenge_ids.include?(c.id)
       %tr{class: (is_completed ? 'success' : '')}
         - if user_signed_in?
           %td
