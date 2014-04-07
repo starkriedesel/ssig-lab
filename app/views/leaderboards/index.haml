@@ -25,5 +25,7 @@
           %td= u.subset_points.to_i
           - if not @filter_list.include? 'challenge'
             %td= u.num_challenges_completed
-          %td= u.last_completed_at
+          %td
+            = time_ago_in_words(u.last_completed_at)
+            ago
 
