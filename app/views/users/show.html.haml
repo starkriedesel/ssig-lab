@@ -1,62 +1,83 @@
+- @completed_challenges = @user.user_completed_challenges.includes(:challenge).order(:created_at).all
+- @challenge_completion_times = {}
+- @completed_challenges.each do |c|
+  - @challenge_completion_times[c.challenge_id] = c.created_at
+- @completed_challenges = @completed_challenges.map(&:challenge)
+
 %h1
   %u= @user[:username]
   's Profile
-.row-fluid.well
+.row-fluid.well.user
   .span5
     %h5 Stats
     %table{:class=>'table'}
       %tr
         %th Username
         %td= @user[:username]
+
       %tr
         %th Points Total
         %td= @user.points
       %tr
         %th Challenges Completed
-        %td= @user.completed_challenges.count
+        %td= @completed_challenges.count
       %tr
         %th Hints Viewed
-        %td= @user.challenge_hints.count
+        %td
+          = @user.challenge_hints.count
+          = "(Total Cost: #{pluralize(@user.challenge_hints.sum(:cost), 'point')})"
       %tr
-        %th Last Login
-        %td= @user[:current_sign_in_at]
-
+        %th Last Challenge Completed
+        %td
+          - last_challenge = @completed_challenges.last
+          = link_to last_challenge.challenge_group.name, last_challenge.challenge_group
+          \/
+          = link_to last_challenge.name, last_challenge
+          %br
+          = time_ago_in_words(@challenge_completion_times[last_challenge.id])
+          ago
+      - if can? :manage, User
+        %tr
+          %th Last Login
+          %td
+            = time_ago_in_words(@user[:current_sign_in_at])
+            ago
   - if can? :read, Challenge
-    .span5
+    .span5.challenges
       %h5
         Completed Challenges
         - if can? :manage, User
           = link_to 'Add', '#', class:'btn btn-mini', data: {toggle: 'modal', target: '#add_challenge_modal'}
-      - if @user.completed_challenges.any?
-        %table{:class=>'table'}
-          %thead
-            %tr
-              %th Challenge Group
-              %th Name
-              %th Points
-              %th Completed On
-              - if can? :manage, User
-                %th Actions
-          %tbody
-            - @user.completed_challenges.joins(:challenge_group).order('challenge_groups.name').each do |c|
-              %tr
-                %td= link_to c.challenge_group.name, c.challenge_group
-                %td= link_to c.name, c
-                %td= "#{c.points - @user.challenge_hints.where(challenge_id: c.id).sum(:cost)} / #{c.points}"
-                %td= @user.user_completed_challenges.where('challenge_id ='+c.id.to_s).first.created_at
-                - if can? :manage, User
-                  %td= link_to 'Clear', user_clear_challenge_path(@user, c.id), method: :delete, class: 'btn btn-danger btn-mini', data: {confirm: 'Are you sure?'}
-      - else
-        %strong No challenges completed
+          %small Click to remove completed status
+      %table(class="table")
+        - ChallengeGroup.includes(:challenges).all.each do |cg|
+          - next if cannot? :read, cg
+          %tr
+            %th.group{class: cg.visible == 1 ? '' : 'notvisible'}= "#{cg.name}:"
+            - i = cg.challenges.first.name.include?("0")? 0 : 1
+            %td.list
+              - cg.challenges.each do |c|
+                %span
+                  - if @completed_challenges.include? c
+                    - time_ago = time_ago_in_words(@challenge_completion_times[c.id])
+                    - if can? :manage, User
+                      = link_to i, user_clear_challenge_path(@user, c.id), method: :delete, class: 'btn btn-mini btn-success', title: "#{time_ago} ago", rel: 'tooltip', data: {placement: 'bottom',confirm: 'Are you sure?'}
+                    - else
+                      = link_to i, c, class: 'btn btn-mini btn-success', title: "#{time_ago} ago", rel: 'tooltip', data: {placement: 'bottom'}
+                  - else
+                    = link_to i, c, class: 'btn btn-mini'
+                  - i+=1
+
 
 - if can?(:read, Role) or can?(:read, ChallengeFlag)
-  .row-fluid.well
+  .row-fluid.well.user
     - if can? :read, Role
       .span5
         %h5 Roles
-        - if @user.roles.any?
+        - roles = @user.roles.all
+        - if roles.count > 0
           %ul
-            - @user.roles.each do |r|
+            - roles.each do |r|
               %li= r.name
         - else
           %strong No roles set
@@ -65,19 +86,17 @@
         %h5 Flags
         - if @user.challenge_flags.any?
           %table{:class=>'table'}
-            %thead
-              %tr
-                %th Challenge Group
-                %th Challenge
-                %th Flag
-                - if can? :delete, ChallengeFlag
-                  %th
             %tbody
-              - @user.challenge_flags.each do |f|
+              - @user.challenge_flags.includes(:challenge, challenge:[:challenge_group]).each do |f|
                 %tr
-                  %td= link_to f.challenge.challenge_group.name, f.challenge.challenge_group
-                  %td= link_to f.challenge.name, f.challenge
+                  %td
+                    = link_to f.challenge.challenge_group.name, f.challenge.challenge_group
+                    \/
+                    = link_to f.challenge.name, f.challenge
                   %td= f.value
+                  %td
+                    = time_ago_in_words(f.created_at)
+                    ago
                   - if can? :delete, f
                     %td= link_to 'Delete', f, method: :delete, class: 'btn btn-danger btn-mini', data: {confirm: 'Are you sure?'}
         - else
