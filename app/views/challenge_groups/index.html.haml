@@ -1,5 +1,5 @@
 %h1 Challenge Groups
-%table{:class=>'table'}
+%table.table
   %thead
     %tr
       %th Challenge Group
@@ -14,7 +14,8 @@
       - if cg.visible != 0 || (user_signed_in? and current_user.roles.include?(Role.find_by_name('admin')))
         %tr{class: (cg.visible == 0 ? 'disabled' : (@num_complete[cg.id.to_s] == cg.challenges.count ? 'success' : ''))}
           %td
-            = link_to cg.name, challenge_group_path(cg.id)
+            %strong
+              = link_to cg.name, challenge_group_path(cg.id)
           %td
             = cg.description
           %td
@@ -35,18 +36,18 @@
               = @group_totals[cg.id.to_s]
           - if can? [:update,:destroy], ChallengeGroup
             %td
-              .btn-group
+              .btn-group.btn-group-xs
                 - if can? :update, cg
                   = link_to 'Edit', edit_challenge_group_path(cg), :class=>'btn btn-warning'
                 - if can? :destroy, cg
                   - if cg.challenges.count.zero?
                     = link_to 'Remove', challenge_group_path(cg), :class=>'btn btn-danger', :confirm=>"Are you sure you want to remove the '#{cg.name}' group?", :method=>:delete
                   - else
-                    = link_to 'Remove', '#', :class=>'btn btn-danger disabled'
+                    = link_to 'Remove', '#', class: 'btn btn-danger disabled'
 .btn-toolbar
   .btn-group
-    = link_to 'All Challenges', challenges_path, :class=>'btn'
-    = link_to 'Leaderboard', leaderboard_path, :class=>'btn'
+    = link_to 'All Challenges', challenges_path, :class=>'btn btn-default'
+    = link_to 'Leaderboard', leaderboard_path, :class=>'btn btn-default'
   .btn-group
     -if can? :create, ChallengeGroup
       = link_to 'New Group', new_challenge_group_path, :class=>'btn btn-primary'

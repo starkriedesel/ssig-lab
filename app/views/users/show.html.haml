@@ -7,10 +7,10 @@
 %h1
   %u= @user[:username]
   's Profile
-.row-fluid.well.user
-  .span5
-    %h5 Stats
-    %table{:class=>'table'}
+.row.well.user
+  .col-sm-6
+    %h3 Stats
+    %table.table
       %tr
         %th Username
         %td= @user[:username]
@@ -29,13 +29,15 @@
       %tr
         %th Last Challenge Completed
         %td
-          - last_challenge = @completed_challenges.last
-          = link_to last_challenge.challenge_group.name, last_challenge.challenge_group
-          \/
-          = link_to last_challenge.name, last_challenge
-          %br
-          = time_ago_in_words(@challenge_completion_times[last_challenge.id])
-          ago
+          - if last_challenge = @completed_challenges.last
+            = link_to last_challenge.challenge_group.name, last_challenge.challenge_group
+            \/
+            = link_to last_challenge.name, last_challenge
+            %br
+            = time_ago_in_words(@challenge_completion_times[last_challenge.id])
+            ago
+          - else
+            You have not completed any challenges
       - if can? :manage, User
         %tr
           %th Last Login
@@ -43,13 +45,13 @@
             = time_ago_in_words(@user[:current_sign_in_at])
             ago
   - if can? :read, Challenge
-    .span5.challenges
-      %h5
+    .col-sm-6.challenges
+      %h3
         Completed Challenges
         - if can? :manage, User
-          = link_to 'Add', '#', class:'btn btn-mini', data: {toggle: 'modal', target: '#add_challenge_modal'}
+          = link_to 'Add', '#', class:'btn btn-mini btn-default', data: {toggle: 'modal', target: '#add_challenge_modal'}
           %small Click to remove completed status
-      %table(class="table")
+      %table.table
         - ChallengeGroup.includes(:challenges).all.each do |cg|
           - next if cannot? :read, cg
           %tr
@@ -65,15 +67,15 @@
                     - else
                       = link_to i, c, class: 'btn btn-mini btn-success', title: "#{time_ago} ago", rel: 'tooltip', data: {placement: 'bottom'}
                   - else
-                    = link_to i, c, class: 'btn btn-mini'
+                    = link_to i, c, class: 'btn btn-mini btn-default'
                   - i+=1
 
 
 - if can?(:read, Role) or can?(:read, ChallengeFlag)
-  .row-fluid.well.user
+  .row.well.user
     - if can? :read, Role
-      .span5
-        %h5 Roles
+      .col-sm-6
+        %h3 Roles
         - roles = @user.roles.all
         - if roles.count > 0
           %ul
@@ -82,10 +84,10 @@
         - else
           %strong No roles set
     - if can? :read, ChallengeFlag
-      .span5
-        %h5 Flags
+      .col-sm-6
+        %h3 Flags
         - if @user.challenge_flags.any?
-          %table{:class=>'table'}
+          %table.table
             %tbody
               - @user.challenge_flags.includes(:challenge, challenge:[:challenge_group]).each do |f|
                 %tr
@@ -102,4 +104,10 @@
         - else
           %strong No flags set
 
-= modal_dialog id: 'add_challenge_modal', header: {show_close: true, dismiss: '#add_challenge_modal', title: 'Add Challenge to User'}, body: render(partial: 'add_challenge_modal', locals: {user: @user})
+.modal.fade#add_challenge_modal
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %h4.modal-title Add Challenge to User
+      .modal-body
+        = render(partial: 'add_challenge_modal', locals: {user: @user})

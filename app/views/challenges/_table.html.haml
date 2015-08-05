@@ -1,4 +1,4 @@
-%table{:class=>'table'}
+%table.table
   %thead
     %tr
       - if user_signed_in?
@@ -13,7 +13,6 @@
   %tbody
     - if user_signed_in?
       - hint_costs = current_user.challenge_hints.where(challenge_id: @challenges.map(&:id)).group(:challenge_id).sum(:cost)
-      - completed_challenge_ids = current_user.completed_challenge_ids
     - @challenges.each do |c|
       - is_completed = user_signed_in? && current_user.completed_challenge_ids.include?(c.id)
       %tr{class: (is_completed ? 'success' : '')}
@@ -22,12 +21,13 @@
             - if is_completed
               %span.label.label-success YES
             - else
-              %span.label.label NO
+              %span.label.label-default NO
         %td
-          - if can? :show, c
-            = link_to c.name, c
-          - else
-            = c.name
+          %strong
+            - if can? :show, c
+              = link_to c.name, c
+            - else
+              = c.name
         %td
           - if user_signed_in?
             - if is_completed
@@ -40,9 +40,9 @@
         %td
           = c.users_completed.where('user_id not in(?)', Role.find_by_name('admin').users.all.map(&:id)).count
         %td
-          .btn-group
-            = link_to 'Leaderboard', leaderboard_challenge_path(c), :class=>'btn'
+          .btn-group.btn-group-xs
+            = link_to 'Leaderboard', leaderboard_challenge_path(c), class: 'btn btn-default'
             - if can? :update, c
-              = link_to 'Edit', edit_challenge_path(c), :class=>'btn btn-warning'
+              = link_to 'Edit', edit_challenge_path(c), class: 'btn btn-warning'
             - if can? :destroy, c
-              = link_to 'Remove', challenge_path(c), :class=>'btn btn-danger', :method=>:delete
+              = link_to 'Remove', challenge_path(c), class: 'btn btn-danger', method: :delete

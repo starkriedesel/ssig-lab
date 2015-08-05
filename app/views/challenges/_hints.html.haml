@@ -10,7 +10,7 @@
 
     - if show_hints.length > 0 #or (num_hints > 0 and ! user_completed_challenge)
       %div
-        %h3{:style=>'display:inline'} Hints
+        %h3(style='display:inline') Hints
         %small
           %strong
             = "(#{num_hints_for_user} of #{num_hints} used || #{points_lost} points detracted)"
@@ -28,4 +28,6 @@
 
     - if num_hints_for_user < num_hints and not user_completed_challenge
       - new_hint = @challenge.challenge_hints[hints_for_user.count]
-      = link_to "Show Hint (#{new_hint.cost} points)", challenge_show_hint_path(@challenge,new_hint.id), :class=>'btn', :confirm=>"Are you sure you want to see a hint? It will cost #{new_hint.cost} points."
+      .btn-toolbar
+        .btn-group
+          = link_to "Show Hint (#{new_hint.cost} points)", challenge_show_hint_path(@challenge,new_hint.id), class: 'btn btn-default', confirm: "Are you sure you want to see a hint? It will cost #{new_hint.cost} points."

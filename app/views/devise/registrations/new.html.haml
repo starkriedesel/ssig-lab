@@ -1,0 +1,27 @@
+%h2 Sign up
+
+= form_for resource, as: resource_name, url: registration_path, html: {class: 'form-horizontal'} do |f|
+  = devise_error_messages!
+
+  .form-group
+    = f.label :username, class:'control-label col-sm-2'
+    .col-sm-5.col-md-4.col-lg-3
+      = f.text_field :username, class: 'form-control', placeholder: 'Username'
+  .form-group
+    = f.label :email, class:'control-label col-sm-2'
+    .col-sm-5.col-md-4.col-lg-3
+      = f.email_field :email, class: 'form-control', placeholder: 'Email'
+  .form-group
+    = f.label :password, class:'control-label col-sm-2'
+    .col-sm-5.col-md-4.col-lg-3
+      = f.password_field :password, class: 'form-control', placeholder: 'Password'
+  .form-group
+    = f.label :password_confirmation, class:'control-label col-sm-2'
+    .col-sm-5.col-md-4.col-lg-3
+      = f.password_field :password_confirmation, class: 'form-control', placeholder: 'Password Confirm'
+  .form-group
+    .col-sm-5.col-sm-offset-2
+      = f.submit 'Sign up', class: 'btn btn-primary btn-lg'
+  .form-group
+    .col-sm-5.col-sm-offset-2
+      = render "devise/shared/links"

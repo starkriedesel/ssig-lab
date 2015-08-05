@@ -6,8 +6,10 @@ class UsersController < ApplicationController
 
   # PUT /users/:id/add_challenge
   def add_challenge
-    @user.completed_challenges << Challenge.find(params[:challenge_id])
+    challenge = Challenge.find(params[:challenge_id])
+    @user.completed_challenges << challenge
     if @user.save
+      @user.update_points
       flash[:success] = 'Added challenge record for user'
     else
       flash[:error] = 'Failed to add challenge record for user'

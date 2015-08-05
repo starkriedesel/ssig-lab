@@ -10,7 +10,7 @@
 
 .btn-toolbar
   .btn-group
-    = link_to 'Challenge Groups', challenge_groups_path, :class=>'btn'
+    = link_to 'Challenge Groups', challenge_groups_path, :class=>'btn btn-default'
   .btn-group
     -if can? :create, ChallengeGroup
       = link_to 'New Group', new_challenge_group_path, :class=>'btn btn-primary'

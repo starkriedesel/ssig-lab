@@ -1,8 +1,10 @@
-class NavbarCell < Cell::Rails
-  #include ChallengeGroup
+class NavbarCell < Cell::ViewModel
+  include ApplicationHelper
+  include AbstractController::Helpers
+  include AbstractController::Translation
   include Devise::Controllers::Helpers
-  helper_method :user_signed_in?
-  helper_method :current_user
+  #helper_method :user_signed_in?
+  #helper_method :current_user
   include CanCan::ControllerAdditions
   
   def show

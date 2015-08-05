@@ -1,95 +1,99 @@
 = form_for @challenge, :html => {:class => "form-horizontal"} do |f|
   %fieldset.span7.well
-    .control-group{class: (@challenge.errors[:challenge_group_id].any? ? 'warning':'')}
-      = f.label :challenge_group_id, :class=>'control-label'
-      .controls
-        = f.collection_select(:challenge_group_id,ChallengeGroup.all,:id,:name,{:prompt=>true})
+    .form-group{class: (@challenge.errors[:challenge_group_id].any? ? 'warning':'')}
+      = f.label :challenge_group_id, class: 'control-label col-sm-2'
+      .col-sm-8
+        = f.collection_select :challenge_group_id, ChallengeGroup.all, :id, :name, {:prompt=>true}, class: 'form-control'
+      .col-sm-2
         - if can? :create, ChallengeGroup
-          = link_to 'New', new_challenge_group_path, :class=>'btn'
-    .control-group{class: (@challenge.errors[:name].any? ? 'warning':'')}
-      = f.label :name, :class=>"control-label"
-      .controls
-        = f.text_field :name
-    .control-group{class: (@challenge.errors[:url].any? ? 'warning':'')}
-      = f.label :url, :class=>"control-label"
-      .controls
-        = f.text_field :url
-    .control-group{class: (@challenge.errors[:points].any? ? 'warning':'')}
-      = f.label :points, :class=>"control-label"
-      .controls
-        = f.text_field :points
-    .control-group{class: (@challenge.errors[:flag_type].any? ? 'warning':'')}
-      = f.label :flag_type, :class=>"control-label"
-      .controls
-        = f.select(:flag_type,Challenge::FLAG_TYPES.map { |s,i| [ActiveSupport::Inflector::humanize(s.to_s),i] },{:prompt=>true})
-    .control-group#flag_data_single{style: 'display:none'}
-      %label.control-label Single Flag
-      .controls
-        = text_field_tag 'challenge[flag_data][single]', @challenge.flag_data[:single]
-    .control-group#flag_data_set{style: 'display:none'}
-      %label.control-label Set
-      #flag_data_set_fields
-        .controls
-          = text_field_tag 'challenge[flag_data][set][]', nil, :class=>'flag_data_set_field'
-          = button_to_function 'Remove', 'removeFlagDataSetValue(this)'
-      .controls
-        = button_to_function 'Add Flag', 'addFlagDataSetValue()'
-    .control-group#flag_data_regex{style: 'display:none'}
-      %label.control-label Flag Regex
-      .controls
-        = text_field_tag 'challenge[flag_data][regex]', @challenge.flag_data[:regex]
-    .control-group#flag_data_ruby_gen{style: 'display:none'}
-      %label.control-label Ruby Flag Generator
-      .controls
+          = link_to 'New', new_challenge_group_path, class: 'btn  btn-default'
+    .form-group{class: (@challenge.errors[:name].any? ? 'warning':'')}
+      = f.label :name, class: 'control-label col-sm-2'
+      .col-sm-8
+        = f.text_field :name, class: 'form-control'
+    .form-group{class: (@challenge.errors[:url].any? ? 'warning':'')}
+      = f.label :url, class: 'control-label col-sm-2'
+      .col-sm-8
+        = f.text_field :url, class: 'form-control'
+    .form-group{class: (@challenge.errors[:points].any? ? 'warning':'')}
+      = f.label :points, class: 'control-label col-sm-2'
+      .col-sm-8
+        = f.text_field :points, class: 'form-control'
+    .form-group{class: (@challenge.errors[:flag_type].any? ? 'warning':'')}
+      = f.label :flag_type, class: 'control-label col-sm-2'
+      .col-sm-8
+        = f.select :flag_type, Challenge::FLAG_TYPES.map { |s,i| [ActiveSupport::Inflector::humanize(s.to_s),i] }, {:prompt=>true}, class: 'form-control'
+    .form-group#flag_data_single{style: 'display:none'}
+      %label.control-label.col-sm-2 Single Flag
+      .col-sm-8
+        = text_field_tag 'challenge[flag_data][single]', @challenge.flag_data[:single], class: 'form-control'
+    .form-group#flag_data_set{style: 'display:none'}
+      %label.control-label.col-sm-2 Set
+      #flag_data_set_fields.col-sm-10.container
+        .row
+          .col-sm-8
+            = text_field_tag 'challenge[flag_data][set][]', nil, class: 'flag_data_set_field form-control'
+          .col-sm-2
+            = link_to 'Remove', '#', onclick: 'removeFlagDataSetValue(this); return false', class: 'btn btn-danger'
+      .col-sm-10.col-sm-offset-2
+        = link_to 'Add Flag', '#', onclick: 'addFlagDataSetValue(); return false', class: 'btn btn-primary'
+    .form-group#flag_data_regex{style: 'display:none'}
+      %label.control-label.col-sm-2 Flag Regex
+      .col-sm-8
+        = text_field_tag 'challenge[flag_data][regex]', @challenge.flag_data[:regex], class: 'form-control'
+    .form-group#flag_data_ruby_gen{style: 'display:none'}
+      %label.control-label.col-sm-2 Ruby Flag Generator
+      .col-sm-8
         def gen()
-        = text_area_tag 'challenge[flag_data][ruby_gen]', (@challenge.flag_data[:ruby_gen]), :rows=>5
-    .control-group#flag_data_ruby_check{style: 'display:none'}
-      %label.control-label Ruby Flag Checker
-      .controls
+        = text_area_tag 'challenge[flag_data][ruby_gen]', (@challenge.flag_data[:ruby_gen]), :rows=>5, class: 'form-control'
+    .form-group#flag_data_ruby_check{style: 'display:none'}
+      %label.control-label.col-sm-2 Ruby Flag Checker
+      .col-sm-8
         def check(flag_value)
-        = text_area_tag 'challenge[flag_data][ruby_check', (@challenge.flag_data[:ruby_check]), :rows=>5
-    .control-group{class: (@challenge.errors[:description].any? ? 'warning':'')}
-      = f.label :description, :class=>"control-label"
-      .controls
-        = f.text_area :description, rows: 5
+        = text_area_tag 'challenge[flag_data][ruby_check', (@challenge.flag_data[:ruby_check]), :rows=>5, class: 'form-control'
+    .form-group{class: (@challenge.errors[:description].any? ? 'warning':'')}
+      = f.label :description, class: 'control-label col-sm-2'
+      .col-sm-8
+        = f.text_area :description, rows: 5, class: 'form-control'
         %br
-        %label.checkbox
-          = f.check_box :description_use_markdown
-          Use Markdown
+        .checkbox
+          %label
+            = f.check_box :description_use_markdown
+            Use Markdown
   %fieldset.span7.well
     %h4 Hints
     - @challenge.challenge_hints.each do |hint|
       = render partial: 'hint_form', locals: {hint: hint}
     /
       = f.fields_for :challenge_hints do |ff|
-        .control-group
-          %label.control-label Text
-          .controls
+        .form-group
+          %label.control-label col-sm-2 Text
+          .col-sm-10
             = ff.text_area :hint_text, rows: 5
             %br
             %label.checkbox
               = ff.check_box :hint_text_use_markdown
               Use Markdown
-        .control-group
-          %label.control-label Cost
-          .controls
+        .form-group
+          %label.control-label col-sm-2 Cost
+          .col-sm-10
             = ff.text_field :cost
     .new_hint_html{style:'display:none'}
       = render partial: 'hint_form', locals: {hint: ChallengeHint.new}
     .new_hints
-    = button_to_function 'Add', 'addHint()', class: 'btn'
+    = link_to 'Add', '#', onclick: 'addHint(); return false', class: 'btn btn-default'
   %fieldset.span7
-    .control-group
-      .controls
+    .form-group
+      .col-sm-10
         - if params[:action] == 'new'
-          = f.submit "Create", :class=> 'btn btn-primary'
+          = f.submit "Create", class:  'btn btn-primary'
         - elsif params[:action] == 'edit'
-          = f.submit "Update", :class=> 'btn btn-primary'
+          = f.submit "Update", class:  'btn btn-primary'
         - else
-          = f.submit "Submit", :class=> 'btn btn-primary'
+          = f.submit "Submit", class:  'btn btn-primary'
 
 :javascript
-  var flag_types = #{Challenge::FLAG_TYPES.keys.to_json};
+  var flag_types = #{Challenge::FLAG_TYPES.keys.to_json.html_safe};
   var flag_set_values = #{(@challenge.flag_data[:set] || []).to_json};
   var flag_set_html = '';
   var flag_set_size = 1;
@@ -117,7 +121,7 @@
   {
     if(flag_set_size <= 1)
       return;
-    $(btn_dom).parent('.controls').remove();
+    $(btn_dom).parents('.row').first().remove();
     flag_set_size -= 1;
   }
 
@@ -139,7 +143,7 @@
   });
 
 :javascript
-  var hint_values = #{@challenge.challenge_hints.map{|h| {id: h.id, text: h.hint_text, cost: h.cost}}.to_json};
+  var hint_values = #{@challenge.challenge_hints.map{|h| {id: h.id, text: h.hint_text, cost: h.cost}}.to_json.html_safe};
   var hint_html = $('new_hint_html').innerHtml;
   
   function addHint() {

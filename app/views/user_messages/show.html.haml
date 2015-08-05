@@ -16,7 +16,7 @@
 
 .btn-toolbar
   .btn-group
-    = link_to "Back", user_messages_path, :class => 'btn'
+    = link_to "Back", user_messages_path, :class => 'btn btn-default'
   .btn-group
     - if @user_message.user_message_content.from_name.blank?
       = link_to "Reply", reply_user_message_path(@user_message), :class => 'btn btn-success'

@@ -10,7 +10,7 @@ class LeaderboardsController < ApplicationController
 	  @leaderboard = User.joins(:user_completed_challenges, :user_completed_challenges => :challenge)
 	                     .select('users.*, MAX(user_completed_challenges.created_at) as last_completed_at, COUNT(user_completed_challenges.challenge_id) as num_challenges_completed, SUM(challenges.points) as subset_points')
                        .group('users.id')
-		       .where('users.id NOT IN(?)', Role.find_by_name('admin').users.all)
+		       .where('users.id NOT IN(?)', Role.find_by_name('admin').users.all.map(&:id))
                        #.order('subset_points DESC, last_completed_at ASC')
 	  
 	  # Create filters
@@ -26,10 +26,10 @@ class LeaderboardsController < ApplicationController
 	  @leaderboard = @leaderboard.all
 	  
 	  # Determine what hints were shown
-	  @hints = User.joins(:challenge_hints)
-                 .group('user_id')
-                 .select("users.id as user_id, SUM(cost) as subset_costs")
-                 .where(:id => (@leaderboard.map {|u| u.id}))
+	  @hints = User.select("users.id as user_id, SUM(cost) as subset_costs")
+                 .where(id: (@leaderboard.map {|u| u.id}))
+								 .joins(:challenge_hints)
+								 .group('user_id')
                  
     # Do filtering on hints
     @filter_wheres.each do |w|
@@ -46,7 +46,7 @@ class LeaderboardsController < ApplicationController
 	  @leaderboard.map { |u| u.subset_points -= @hints[u.id]  }
 	  
 	  # Sort by points then by last completed time
-	  @leaderboard.sort! do |a,b|
+	  @leaderboard.to_a.sort! do |a,b|
 	    c = b.subset_points <=> a.subset_points
 	    c.zero? ? (a.last_completed_at <=> b.last_completed_at) : c
 	  end

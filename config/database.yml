@@ -5,28 +5,21 @@
 #   gem 'sqlite3'
 #
 default: &default
-  adapter: mysql2
+  adapter: sqlite3
   pool: 5
   timeout: 5000
 
 development:
   <<: *default
-  host: localhost
-  database: ssiglab
-  username: ssiglab
-  password: ssiglab
+  database: db/development.sqlite3
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
 test:
   <<: *default
-  adapter: sqlite3
   database: db/test.sqlite3
 
 production:
   <<: *default
-  host: localhost
-  database: ssiglab_prod
-  username: ssiglab_prod
-  password: ssiglab_prod
+  database: db/production.sqlite3

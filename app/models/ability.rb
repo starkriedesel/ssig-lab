@@ -47,6 +47,7 @@ class Ability
     can :manage, :all
 
     # Messages
+    cannot :manage, UserMessage # Disable
     #can :multi_send, UserMessage
     #can :system_send, UserMessage
   end
