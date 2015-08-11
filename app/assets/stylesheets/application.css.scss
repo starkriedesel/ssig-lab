@@ -67,16 +67,15 @@ tr.disabled {
 
 .user .challenges {
   .group {
-    font-weight: bold;
-    &.notvisible {
+    & h5 {
+      font-weight: bold;
+    }
+    &.notvisible a {
       color: #911;
     }
   }
   .list a {
     font-weight: bold;
+    font-family: "monospace";
   }
-}
-
-.btn-group {
-  margin-bottom: 15px;
 }

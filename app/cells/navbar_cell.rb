@@ -13,7 +13,8 @@ class NavbarCell < Cell::ViewModel
       Register: {url: registration_path, condition: (not user_signed_in?)},
       Challenges: {url: challenge_groups_path, condition: (can? :read, Challenge)},
       Profile: {url: user_signed_in? ? user_path(current_user[:id]) : '', condition: (user_signed_in?)},
-      Leaderboard: {url: leaderboard_path, condition: (can? :read, User)}
+      Leaderboard: {url: leaderboard_path, condition: (can? :read, User)},
+      'Sign In' => {url: login_path, condition: (! user_signed_in?), class: 'hidden-lg'},
     }
     
     @nav_links[:Challenges][:sublinks] = {}

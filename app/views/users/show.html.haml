@@ -5,7 +5,7 @@
 - @completed_challenges = @completed_challenges.map(&:challenge)
 
 %h1
-  %u= @user[:username]
+  %u= @user.username
   's Profile
 .row.well.user
   .col-sm-6
@@ -13,7 +13,7 @@
     %table.table
       %tr
         %th Username
-        %td= @user[:username]
+        %td= @user.username
 
       %tr
         %th Points Total
@@ -37,38 +37,43 @@
             = time_ago_in_words(@challenge_completion_times[last_challenge.id])
             ago
           - else
-            You have not completed any challenges
+            #{@user.username} has not completed any challenges
       - if can? :manage, User
         %tr
           %th Last Login
-          %td
-            = time_ago_in_words(@user[:current_sign_in_at])
-            ago
+          %td= @user.current_sign_in_at.nil? ? 'never' : time_ago_in_words(@user.current_sign_in_at) + ' ago'
   - if can? :read, Challenge
     .col-sm-6.challenges
       %h3
         Completed Challenges
         - if can? :manage, User
-          = link_to 'Add', '#', class:'btn btn-mini btn-default', data: {toggle: 'modal', target: '#add_challenge_modal'}
+          = link_to 'Add', '#', class:'btn btn-xs btn-default', data: {toggle: 'modal', target: '#add_challenge_modal'}
           %small Click to remove completed status
       %table.table
         - ChallengeGroup.includes(:challenges).all.each do |cg|
           - next if cannot? :read, cg
           %tr
-            %th.group{class: cg.visible == 1 ? '' : 'notvisible'}= "#{cg.name}:"
-            - i = cg.challenges.first.name.include?("0")? 0 : 1
+            - if cg.visible == 1
+              %th.group
+                %h5= link_to cg.name, cg
+            - else
+              %th.group.notvisible
+                %h5= link_to cg.name, cg
+            - i = 1 # cg.challenges.first.name.include?('0')? 0 : 1
             %td.list
-              - cg.challenges.each do |c|
-                %span
-                  - if @completed_challenges.include? c
-                    - time_ago = time_ago_in_words(@challenge_completion_times[c.id])
-                    - if can? :manage, User
-                      = link_to i, user_clear_challenge_path(@user, c.id), method: :delete, class: 'btn btn-mini btn-success', title: "#{time_ago} ago", rel: 'tooltip', data: {placement: 'bottom',confirm: 'Are you sure?'}
+              .btn-group
+                - cg.challenges.each do |c|
+                  - btn_class = 'btn btn-sm'+((@completed_challenges.include? c) ? ' btn-success' : ' btn-default')
+                  %span
+                    - if @completed_challenges.include? c
+                      - time_ago = time_ago_in_words(@challenge_completion_times[c.id])
+                      - if can? :manage, User
+                        = link_to i.to_s.rjust(2, '0'), user_clear_challenge_path(@user, c.id), method: :delete, class: btn_class, title: "#{time_ago} ago", rel: 'tooltip', data: {placement: 'bottom',confirm: 'Are you sure?'}
+                      - else
+                        = link_to i.to_s.rjust(2, '0'), c, class: btn_class, title: "#{time_ago} ago", rel: 'tooltip', data: {placement: 'bottom'}
                     - else
-                      = link_to i, c, class: 'btn btn-mini btn-success', title: "#{time_ago} ago", rel: 'tooltip', data: {placement: 'bottom'}
-                  - else
-                    = link_to i, c, class: 'btn btn-mini btn-default'
-                  - i+=1
+                      = link_to i.to_s.rjust(2, '0'), c, class: btn_class
+                    - i+=1
 
 
 - if can?(:read, Role) or can?(:read, ChallengeFlag)

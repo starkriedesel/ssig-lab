@@ -1,15 +1,15 @@
-= form_for(resource, :as => resource_name, :url => login_path, :html => { :class => "form-signin" }) do |f|
+= form_for(resource, as: resource_name, url: login_path, html: {class: 'form-signin'}) do |f|
   %h2.form-signin-heading Please sign in
   .form-group
-    = f.text_field :username, :class=>"form-control", :placeholder=>"Username"
+    = f.text_field :username, class: 'form-control', placeholder: 'Username'
   .form-group
-    = f.password_field :password, :class=>"form-control", :placeholder=>"Password"
+    = f.password_field :password, class: 'form-control', placeholder: 'Password'
   - if devise_mapping.rememberable?
     .checkbox
       %label
         = f.check_box :remember_me
         Remember me
   .form-group
-    = f.submit "Sign in", :class=>"btn btn-large btn-primary"
+    = f.submit 'Sign in', class: 'btn btn-large btn-primary'
   .form-group
-    = render "devise/shared/links"
+    = render 'devise/shared/links'

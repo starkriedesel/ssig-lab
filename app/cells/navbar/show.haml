@@ -12,12 +12,12 @@
     %div.navbar-collapse.collapse#navbar
       - if user_signed_in? # User Signed In:
         -# Logout Btn
-        %p.navbar-text.navbar-right.navbar-form
-          = link_to 'Logout', logout_path, :method=>:delete, :class=>'btn btn-default btn-xs'
+        %p.navbar-right.navbar-form
+          = link_to 'Logout', logout_path, :method=>:delete, :class=>'btn btn-default'
         -# Messages Btn
         - if can? :read, UserMessage
           %p.navbar-text.navbar-right.navbar-form
-            %a.btn.btn-default.btn-xs.btn-inverse{title:pluralize(@unread_msgs, 'Message'), "data-placement"=>"bottom", rel: "tooltip", href: user_messages_path, :class=>@unread_msgs > 0 ? 'unread_msgs_color': ''}
+            %a.btn.btn-default.btn-xs.btn-inverse{title: pluralize(@unread_msgs, 'Message'), data: { placement: 'bottom'}, rel: 'tooltip', href: user_messages_path, class: @unread_msgs > 0 ? 'unread_msgs_color': ''}
               %i.fa.fa-envelope
         -# Signed in as text
         %p.navbar-text.navbar-right
@@ -26,18 +26,19 @@
           &nbsp;&nbsp;&nbsp;&nbsp;
 
       - else # User Not Signed In:
-        -# User Sign In Form
-        = form_for User.new, :as=>:user, :url=>login_path, :html=>{:class=>'navbar-form navbar-right'} do |f|
-          .form-group
-            = f.text_field :username, :class=>'form-control', :placeholder=>'Username'
-          .form-group
-            = f.password_field :password, :class=>'form-control', :placeholder=>'Password'
-          = f.submit 'Sign in', :class=>'btn'
+        .visible-lg-inline
+          -# User Sign In Form
+          = form_for User.new, :as=>:user, :url=>login_path, :html=>{:class=>'navbar-form navbar-right'} do |f|
+            .form-group
+              = f.text_field :username, :class=>'form-control', :placeholder=>'Username'
+            .form-group
+              = f.password_field :password, :class=>'form-control', :placeholder=>'Password'
+            = f.submit 'Sign in', :class=>'btn btn-default'
 
       %ul.nav.navbar-nav
         - @nav_links.each_pair do |name,link|
           - next if not link[:condition]
-          %li{class: ((link[:active]?'active':'') +' '+ (link[:sublinks].any? ? 'dropdown' : ''))}
+          %li{class: ((link[:active] ? 'active' : '') +' '+ (link[:sublinks].any? ? 'dropdown' : '') +' '+ (link[:class] || ''))}
             %a{class: (link[:sublinks].any? ? 'dropdown-toggle' : ''), href: link[:url]}
               = name
               - if link[:sublinks].any?
