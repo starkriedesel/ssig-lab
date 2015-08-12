@@ -1,6 +1,6 @@
-.row-fluid
-  - if form_model.errors.any?
-    .alert.alert-error
+- if form_model.errors.any?
+  .flash-alerts
+    .alert.alert-danger
       %h5 There was a problem
       %ul
         - form_model.errors.full_messages.each do |msg|

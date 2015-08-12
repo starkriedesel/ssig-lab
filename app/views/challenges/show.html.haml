@@ -1,3 +1,5 @@
+- challenge_launched = current_user.launched_challenges.include?(@challenge)
+
 %ol.breadcrumb.panel
   %li
     = link_to 'Challenges', ChallengeGroup
@@ -18,15 +20,44 @@
     %th Points
     %td= @challenge.points
   %tr
+    %th Instructions
+    %td
+      - if @challenge.launch_none?
+        Click "Start Challenge" below and then
+      - elsif @challenge.launch_download?
+        Download the challenge by clicking "Start Challenge" and then
+      - elsif @challenge.launch_docker?
+        Clicking "Start Challenge" below will setup a server for you to use. Then
+      - else
+        %strong [Insert instructions here]
+      - if @challenge.submit_simple?
+        enter the challenge flag in the form below.
+      - elsif @challenge.submit_service?
+        configure the server to meet the requirements below.
+      - elsif @challenge.submit_auto?
+        once you complete this challenge the flag will automatically be submitted for you.
+      - else
+        %strong [Insert instructions here]
+  %tr
     %th Description
     %td= @challenge.description_html
 
 = render 'hints'
 
+- if challenge_launched
+  = render 'submit_form'
+
 .btn-toolbar
   .btn-group
-    - if can? :goto, @challenge
-      = link_to 'Go', challenge_goto_path(@challenge), class: 'btn btn-primary'
+    - if can? :launch, @challenge
+      - if challenge_launched
+        - if @challenge.submit_service?
+          = link_to 'Submit for Grading', challenge_complete_path(@challenge), class: 'btn btn-success', data: {confirm: 'Are you sure you wish to be graded on this challenge?'}
+        - if @challenge.launch_download?
+          =link_to 'Download Again', challenge_launch_path(@challenge), class: 'btn btn-primary'
+        = link_to 'Give Up', challenge_giveup_path(@challenge), class: 'btn btn-danger', data: {confirm: 'Are you sure?'}
+      - else
+        = link_to 'Start Challenge', challenge_launch_path(@challenge), class: 'btn btn-primary'
   .btn-group
     = link_to 'Challenge Group', @challenge.challenge_group, class: 'btn btn-default'
     = link_to 'Leaderboard', leaderboard_challenge_path(@challenge.id), class: 'btn btn-default'
@@ -34,5 +65,5 @@
     - if can? :update, @challenge
       = link_to 'Edit', edit_challenge_path(@challenge), class: 'btn btn-warning'
     - if can? :destroy, @challenge
-      = link_to 'Remove', challenge_path(@challenge), class: 'btn btn-danger', method: :delete
+      = link_to 'Remove', challenge_path(@challenge), class: 'btn btn-danger', method: :delete, data: {confirm: 'Are you sure?'}
 

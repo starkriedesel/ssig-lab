@@ -13,9 +13,23 @@ class ChallengesController < ApplicationController
   def show
   end
 
-  # GET /challenges/:id/goto
-  def goto
+  # GET /challenges/:id/launch
+  def launch
+    raise 'Docker mode has not been implemented' if @challenge.launch_docker?
     @flag = ChallengeFlag.generate_flag!(current_user.id, @challenge)
+    redirect_to @challenge if @challenge.launch_none?
+    redirect_to @challenge.url if @challenge.launch_download?
+  end
+
+  # GET /challenges/:id/giveup
+  def giveup
+    @flag = ChallengeFlag.find([current_user.id, @challenge.id])
+    if @flag.delete
+      flash[:notice] = "You have given up on challenge '#{@challenge.name}'. Try again later!"
+    else
+      flash[:error] = "Challenge give up operation failed for challenge '#{@challenge.name}'"
+    end
+    redirect_to @challenge
   end
   
   # GET /challenges/new
@@ -64,28 +78,32 @@ class ChallengesController < ApplicationController
   # POST /challenges/:id/complete
   def complete
     @challenge = Challenge.find(params[:id])
-    @flag = ChallengeFlag.find([current_user.id, @challenge.id])
-    
-    # Correct flag
-    if @flag.check params[:flag]
-      @flag.destroy
-      if current_user.completed_challenges.include? @challenge
-        flash[:notice] = "That was correct, but you have already completed '#{@challenge.name}'"
-      else
-        current_user.completed_challenges << @challenge
-        current_user.points += @challenge.points - (@challenge.opened_hints_for_user(current_user).sum(:cost))
-        if current_user.save
-          flash[:success] = "You completed '#{@challenge.name}' and received #{@challenge.points} points!"
-        else
-          flash[:error] = "There was a problem updating your completed challenges for '#{@challenge.name}'"
-        end
-      end
-      redirect_to @challenge.challenge_group
+    if @challenge.submit_simple?
+      @flag = ChallengeFlag.find([current_user.id, @challenge.id])
 
-    # Incorrect flag
+      # Correct flag
+      if @flag.check params[:flag]
+        @flag.destroy
+        if current_user.completed_challenges.include? @challenge
+          flash[:notice] = "That was correct, but you have already completed '#{@challenge.name}'"
+        else
+          current_user.completed_challenges << @challenge
+          current_user.points += @challenge.points - (@challenge.opened_hints_for_user(current_user).sum(:cost))
+          if current_user.save
+            flash[:success] = "You completed '#{@challenge.name}' and received #{@challenge.points} points!"
+          else
+            flash[:error] = "There was a problem updating your completed challenges for '#{@challenge.name}'"
+          end
+        end
+        redirect_to @challenge
+
+      # Incorrect flag
+      else
+        flash[:error] = "Incorrect flag value for '#{@challenge.name}'. Try again."
+        redirect_to @challenge
+      end
     else
-      flash[:error] = "Incorrect flag value for '#{@challenge.name}'. Try again."
-      redirect_to @challenge.challenge_group
+      raise "Submit type '#{@challenge.submit_type.split('_',2)[1].humanize}' has not been implemented"
     end
   end
   
@@ -110,7 +128,8 @@ class ChallengesController < ApplicationController
 
   private
   def challenge_params
-    params.require(:challenge).permit(:challenge_group_id, :name, :url, :points, :flag_type, :description, :description_use_markdown,
+    params.require(:challenge).permit(:challenge_group_id, :name, :url, :points, :flag_type, :description,
+                                      :description_use_markdown, :launch_type, :submit_type,
                                       challenge_hints_attributes: [:id, :hint_text, :cost, :hint_text_use_markdown, :_destroy],
                                       flag_data: [Challenge::FLAG_TYPES.keys, set: []])
   end

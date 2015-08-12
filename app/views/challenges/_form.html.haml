@@ -1,25 +1,37 @@
 = form_for @challenge, :html => {:class => "form-horizontal"} do |f|
   %fieldset.span7.well
-    .form-group{class: (@challenge.errors[:challenge_group_id].any? ? 'warning':'')}
+    .form-group{class: (@challenge.errors[:challenge_group_id].any? ? 'has-error':'')}
       = f.label :challenge_group_id, class: 'control-label col-sm-2'
       .col-sm-8
         = f.collection_select :challenge_group_id, ChallengeGroup.all, :id, :name, {:prompt=>true}, class: 'form-control'
       .col-sm-2
         - if can? :create, ChallengeGroup
           = link_to 'New', new_challenge_group_path, class: 'btn  btn-default'
-    .form-group{class: (@challenge.errors[:name].any? ? 'warning':'')}
+    .form-group{class: (@challenge.errors[:name].any? ? 'has-error':'')}
       = f.label :name, class: 'control-label col-sm-2'
       .col-sm-8
         = f.text_field :name, class: 'form-control'
-    .form-group{class: (@challenge.errors[:url].any? ? 'warning':'')}
+    .form-group
+      = f.label :launch_type, class: 'control-label col-sm-2'
+      .col-sm-8
+        = f.select :launch_type, Challenge.launch_types.to_a.map { |a,_| [a.split('_',2)[1].humanize, a] }.to_h, {}, class: 'form-control'
+    .form-group
+      = f.label :submit_type, class: 'control-label col-sm-2'
+      .col-sm-8
+        = f.select :submit_type, Challenge.submit_types.to_a.map { |a,_| [a.split('_',2)[1].humanize, a] }.to_h, {}, class: 'form-control'
+    .form-group{class: (@challenge.errors[:url].any? ? 'has-error':'')}
       = f.label :url, class: 'control-label col-sm-2'
       .col-sm-8
         = f.text_field :url, class: 'form-control'
-    .form-group{class: (@challenge.errors[:points].any? ? 'warning':'')}
+    .form-group{class: (@challenge.errors[:docker_image_name].any? ? 'has-error':'')}
+      = f.label :docker_image_name, class: 'control-label col-sm-2'
+      .col-sm-8
+        = f.text_field :docker_image_name, class: 'form-control'
+    .form-group{class: (@challenge.errors[:points].any? ? 'has-error':'')}
       = f.label :points, class: 'control-label col-sm-2'
       .col-sm-8
         = f.text_field :points, class: 'form-control'
-    .form-group{class: (@challenge.errors[:flag_type].any? ? 'warning':'')}
+    .form-group{class: (@challenge.errors[:flag_type].any? ? 'has-error':'')}
       = f.label :flag_type, class: 'control-label col-sm-2'
       .col-sm-8
         = f.select :flag_type, Challenge::FLAG_TYPES.map { |s,i| [ActiveSupport::Inflector::humanize(s.to_s),i] }, {:prompt=>true}, class: 'form-control'
@@ -51,7 +63,7 @@
       .col-sm-8
         def check(flag_value)
         = text_area_tag 'challenge[flag_data][ruby_check', (@challenge.flag_data[:ruby_check]), :rows=>5, class: 'form-control'
-    .form-group{class: (@challenge.errors[:description].any? ? 'warning':'')}
+    .form-group{class: (@challenge.errors[:description].any? ? 'has-error':'')}
       = f.label :description, class: 'control-label col-sm-2'
       .col-sm-8
         = f.text_area :description, rows: 5, class: 'form-control'
@@ -93,8 +105,28 @@
           = f.submit "Submit", class:  'btn btn-primary'
 
 :javascript
+  function showHideConfigFields()
+  {
+    var launch_type = $('#challenge_launch_type').val();
+    if(launch_type == 'launch_download') {
+      $('#challenge_url').parents('.form-group').removeClass('hidden');
+    }
+    else {
+      $('#challenge_url').parents('.form-group').addClass('hidden');
+    }
+    if(launch_type == 'launch_docker') {
+      $('#challenge_docker_image_name').parents('.form-group').removeClass('hidden');
+    }
+    else {
+      $('#challenge_docker_image_name').parents('.form-group').addClass('hidden');
+    }
+  }
+  $('#challenge_launch_type').change(showHideConfigFields);
+  $(function () { showHideConfigFields(); });
+
+:javascript
   var flag_types = #{Challenge::FLAG_TYPES.keys.to_json.html_safe};
-  var flag_set_values = #{(@challenge.flag_data[:set] || []).to_json};
+  var flag_set_values = #{(@challenge.flag_data[:set] || []).to_json.html_safe};
   var flag_set_html = '';
   var flag_set_size = 1;
 

@@ -1,0 +1,8 @@
+- if @challenge.submit_simple?
+  %form.form-horizontal.well-sm{method: 'POST', action: challenge_complete_path(@challenge)}
+    .form-group
+      = label_tag :flag, 'Submit Flag', class: 'control-label col-sm-2 col-xs-12'
+      .col-sm-8.col-xs-12
+        = text_field_tag :flag, '', class: 'form-control'
+      .col-xs-1
+        = submit_tag 'Submit', class: 'btn btn-success'

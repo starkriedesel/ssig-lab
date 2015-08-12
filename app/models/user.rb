@@ -17,6 +17,9 @@ class User < ActiveRecord::Base
   
   # Flags
   has_many :challenge_flags
+
+  # Launched Challenges (Many to Many)
+  has_many :launched_challenges, through: :challenge_flags, source: :challenge
   
   # Completed Challenges (Many to Many)
   has_many :user_completed_challenges

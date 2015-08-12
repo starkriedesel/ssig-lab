@@ -20,16 +20,17 @@
     .container-fluid
       .row
         .col-md-10.col-md-offset-1
-          - if not flash[:error].blank?
-            .alert.alert-error
-              = flash[:error]
-          - if not flash[:alert].blank?
-            .alert.alert-warning
-              = flash[:alert]
-          - if not flash[:notice].blank?
-            .alert.alert-info
-              = flash[:notice]
-          - if not flash[:success].blank?
-            .alert.alert-success
-              = flash[:success]
+          .flash-alerts
+            - if not flash[:error].blank?
+              .alert.alert-danger
+                = flash[:error]
+            - if not flash[:alert].blank?
+              .alert.alert-warning
+                = flash[:alert]
+            - if not flash[:notice].blank?
+              .alert.alert-info
+                = flash[:notice]
+            - if not flash[:success].blank?
+              .alert.alert-success
+                = flash[:success]
           = yield
