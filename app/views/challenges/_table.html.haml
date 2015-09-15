@@ -1,14 +1,13 @@
 %table.table
   %thead
     %tr
-      - if user_signed_in?
-        %th Completed
       %th Challenge Name
       - if user_signed_in?
         %th Points Recieved / Total Points
       - else
         %th Points
       %th # Users Completed
+      %th Tags
       %th
   %tbody
     - if user_signed_in?
@@ -16,18 +15,20 @@
     - @challenges.each do |c|
       - is_completed = user_signed_in? && current_user.completed_challenge_ids.include?(c.id)
       %tr{class: (is_completed ? 'success' : '')}
-        - if user_signed_in?
-          %td
-            - if is_completed
-              %span.label.label-success YES
-            - else
-              %span.label.label-default NO
         %td
           %strong
-            - if can? :show, c
-              = link_to c.name, c
+            - if params[:controller] == 'challenge_groups'
+              - if can? :show, c
+                = link_to c.name, c
+              - else
+                = c.name
             - else
-              = c.name
+              %ol.breadcrumb.inline
+                %li= link_to c.challenge_group.name, c.challenge_group
+                - if can? :show, c
+                  %li= link_to c.name, c
+                - else
+                  %li= c.name
         %td
           - if user_signed_in?
             - if is_completed
@@ -39,6 +40,8 @@
             = c.points
         %td
           = c.users_completed.where('user_id not in(?)', Role.find_by_name('admin').users.all.map(&:id)).count
+        %td
+          = render partial: 'challenges/tags', locals: {challenge: c}
         %td
           .btn-group.btn-group-xs
             = link_to 'Leaderboard', leaderboard_challenge_path(c), class: 'btn btn-default'

@@ -1,0 +1,40 @@
+- if @docker_servers.empty?
+  %h2 No Docker Servers Found
+- i=1
+- @docker_servers.each do |docker_server|
+  .col-lg-6.col-md-12
+    .panel.panel-info
+      .panel-heading
+        %h2= docker_server.server_name
+        %h4= docker_server.access_ip
+      .panel-body
+        .btn-group
+          %a.btn.btn-primary{data:{toggle:'collapse'}, href: "#collapseChallenges#{i}", aria: {expanded: 'false', controls: "collapseChallenges#{i}"}}
+            Show Running Challenges
+          %a.btn.btn-default{data:{toggle:'collapse'}, href: "#collapseOptions#{i}", aria: {expanded: 'false', controls: "collapseOptions#{i}"}}
+            Show Options
+      .collapse.in{id:"collapseChallenges#{i}"}
+        - running = docker_server.running_challenges
+        - if running.blank?
+          %h4 No Running Challenge Containers
+        - else
+          %table{class: 'table'}
+            %tbody
+              - running.each do |id, info|
+                - no_challenge = info.delete(:_no_challenge) == 1
+                %tr{class: (no_challenge ? 'disabled' : '')}
+                  %th
+                    = id
+                    - if info[:_flag_id]
+                      %br
+                        - if can? :destroy, ChallengeFlag
+                          = link_to 'Kill', challenge_flag_path(info.delete(:_flag_id).to_s.html_safe), method: :delete, class: 'btn btn-danger btn-xs', data: {confirm: 'Are you sure?'}
+                  %td
+                    = render partial: 'pages/options_table', locals: {options: info, is_inner_table: true}
+      .collapse{id:"collapseOptions#{i}"}
+        - options = docker_server.server_info
+        - options['API Url'] = docker_server.api_url
+        - options['Options'] = docker_server.options
+        - options['DriverStatus'] = options['DriverStatus'].to_h
+        = render partial: 'pages/options_table', locals: {options: options, is_inner_table: false}
+        - i += 1

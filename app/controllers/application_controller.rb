@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
-  before_filter :authenticate
+  before_filter :authenticate_http_basic
   before_filter :configure_permitted_parameters, if: :devise_controller?
   
   # Set this to true to remove the navbar for a page
@@ -26,7 +26,7 @@ class ApplicationController < ActionController::Base
   end
 
   private
-  def authenticate
+  def authenticate_http_basic
     return unless Rails.env.production?
     authenticate_or_request_with_http_basic do |username, password|
       username == 'ssig' and password = 'SSIGAdmin1'

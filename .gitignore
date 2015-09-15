@@ -17,5 +17,9 @@
 # Compiled gem file
 Gemfile.lock
 
-# Eclipse files
+# Project files
 .project
+/.idea
+
+# Challenge dockers
+/dockerfiles/challenges

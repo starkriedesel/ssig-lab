@@ -15,8 +15,10 @@ class NavbarCell < Cell::ViewModel
       Profile: {url: user_signed_in? ? user_path(current_user[:id]) : '', condition: (user_signed_in?)},
       Leaderboard: {url: leaderboard_path, condition: (can? :read, User)},
       'Sign In' => {url: login_path, condition: (! user_signed_in?), class: 'hidden-lg'},
+      Admin: {url: nil, condition: (can? :manage, Challenge), sublinks: {Docker: {url: admin_docker_path}}}
     }
-    
+
+    # Create challenges dropdown
     @nav_links[:Challenges][:sublinks] = {}
     group_filter = ChallengeGroup
     group_filter = group_filter.where('visible = 1')
@@ -46,7 +48,7 @@ class NavbarCell < Cell::ViewModel
   
   def checkActive(link)
     link[:condition] = true if link[:condition].nil?
-    link[:active] = true
+    link[:active] = link[:url].nil? ? false : true
     if link[:condition]
       Rails.application.routes.recognize_path(link[:url]).each_pair do |condition_name, condition_value|
         if params[condition_name] != condition_value

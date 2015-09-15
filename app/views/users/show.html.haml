@@ -100,7 +100,11 @@
                     = link_to f.challenge.challenge_group.name, f.challenge.challenge_group
                     \/
                     = link_to f.challenge.name, f.challenge
-                  %td= f.value
+                  %td
+                    = f.value
+                    - unless f.docker_container_id.blank?
+                      %br
+                      = "docker:#{f.docker_container_id}"
                   %td
                     = time_ago_in_words(f.created_at)
                     ago

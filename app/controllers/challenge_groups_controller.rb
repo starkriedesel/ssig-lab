@@ -1,6 +1,6 @@
 class ChallengeGroupsController < ApplicationController
   load_and_authorize_resource
-   skip_load_resource only: [:create]
+  skip_load_resource only: [:create]
   
   # GET /challengeGroups
 	def index

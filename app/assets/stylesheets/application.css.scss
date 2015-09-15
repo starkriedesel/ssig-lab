@@ -83,3 +83,33 @@ tr.disabled {
 .flash-alerts .alert {
   margin-top: -10px;
 }
+
+table table.table.table-condensed {
+  background-color: transparent;
+  margin-bottom: -5px;
+  margin-top: -5px;
+  & > tbody tr:first-child {
+    & > th, & > td {
+      border: none;
+    }
+  }
+}
+
+ol.breadcrumb.inline {
+  padding: 0;
+  margin-bottom: 0;
+  background-color: transparent;
+  border-radius: 0;
+}
+
+a.label:hover {
+  text-decoration: none;
+}
+
+.text-success {
+  color: #5cb85c;
+}
+
+html {
+  overflow-y: scroll;
+}

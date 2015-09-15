@@ -2,6 +2,10 @@ class ChallengeFlag < ActiveRecord::Base
   require 'securerandom'
   
   self.primary_keys= :user_id, :challenge_id
+
+  validates :user_id, presence: true
+  validates :challenge_id, presence: true
+  validates :docker_container_id, uniqueness: true, presence: true, if: :is_docker_flag # require a container id for docker challenges
   
   belongs_to :user
   belongs_to :challenge
@@ -14,7 +18,7 @@ class ChallengeFlag < ActiveRecord::Base
     SecureRandom.hex
   end
   
-  def self.generate_flag!(user_id, challenge)
+  def self.generate_flag(user_id, challenge)
     flag_type = challenge.flag_type_name
     flag_str = nil
     if [:random, :single, :set, :ruby_gen].include? flag_type
@@ -27,10 +31,7 @@ class ChallengeFlag < ActiveRecord::Base
     raise 'ChallengeFlag cannot be generated' if flag_str.nil?
     flag = ChallengeFlag.where(user_id: user_id, :challenge_id => challenge.id).first
     flag ||= ChallengeFlag.create({user_id: user_id, challenge_id: challenge.id, value: flag_str, nonce: generate_nonce})
-    if flag.nonce.blank?
-      flag.nonce = generate_nonce
-      flag.save
-    end
+    flag.nonce ||= generate_nonce
     flag
   end
 
@@ -42,6 +43,10 @@ class ChallengeFlag < ActiveRecord::Base
       return !! lambda {|flag_value| eval check_code }.call(attempt)
     end
     value == attempt
+  end
+
+  def is_docker_flag
+    challenge.launch_docker?
   end
 
   private

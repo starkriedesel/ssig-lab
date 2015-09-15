@@ -30,9 +30,10 @@ class Ability
   # Basic user, no roles
   def user
     guest # inherits from guest
-    can :goto, Challenge
+    can :launch, Challenge
     can :complete, Challenge
     can :show_hint, Challenge
+    can :destroy, ChallengeFlag, user_id: @user.id
 
     # Messages
     #can [:read, :destroy], UserMessage, :user_id=>@user.id

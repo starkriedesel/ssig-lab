@@ -1,0 +1,21 @@
+- no_header ||= false
+- table_classes = 'table'
+- if is_inner_table
+  - table_classes += ' table-condensed'
+
+%table{class: table_classes}
+  %tbody
+    - options.each do |key, value|
+      %tr
+        - unless no_header
+          %th= key
+        %td
+          - if value.is_a? Hash
+            = render partial: 'pages/options_table', locals: {options: value, is_inner_table: true}
+          - elsif value.is_a? Array
+            = render partial: 'pages/options_table', locals: {options: value, is_inner_table: true, no_header: true}
+          - else
+            - if no_header
+              = key
+            - else
+              = value

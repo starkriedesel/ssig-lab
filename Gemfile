@@ -8,6 +8,7 @@ gem 'sqlite3'
 #gem 'mysql2'
 gem 'activerecord-session_store'
 gem 'composite_primary_keys'
+gem 'acts-as-taggable-on', '~> 3.4'
 
 # Debug
 group :development do
@@ -46,3 +47,6 @@ gem 'therubyracer', platform: :ruby
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin]
+
+# Docker Engine
+gem 'docker-api', require: 'docker'

@@ -23,7 +23,11 @@ class Challenge < ActiveRecord::Base
   validates :submit_type, exclusion: {in: %w(submit_service)}, unless: :launch_docker? # Only docker has services
   validates :submit_type, inclusion: {in: %w(submit_simple)}, if: :launch_none? # Launch none must have simple submit
 
+  # Serialize data columns
   serialize :flag_data, Hash
+
+  # Tags
+  acts_as_taggable
 
   # Callbacks
   after_initialize :default_values
@@ -73,7 +77,6 @@ class Challenge < ActiveRecord::Base
       set_value = set_value.try(:to_s) || ''
       set_value.length > 0
     end
-
 
     # Any Set
     flag_data[:any_set] = [] if flag_data[:any_set].nil? or not flag_data[:any_set].kind_of? Array

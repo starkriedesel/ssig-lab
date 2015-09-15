@@ -6,6 +6,7 @@
       %th Description
       %th Count
       %th Points Total
+      %th Tags
       - if can? [:update,:destroy], ChallengeGroup
         %th Manage
   %tbody
@@ -34,6 +35,11 @@
                 %span.denominator= @group_totals[cg.id.to_s]
             - else
               = @group_totals[cg.id.to_s]
+          %td
+            - if user_signed_in? and current_user.launched_challenges.where(challenge_group_id: cg.id).count > 0
+              %span.label.label-info In Progress
+            - cg.challenges.tag_counts_on(:tags).sort_by{|t| -t.taggings_count}.map(&:name).each do |tag|
+              = link_to tag, challenge_tag_search_path(tag), class: 'label label-primary'
           - if can? [:update,:destroy], ChallengeGroup
             %td
               .btn-group.btn-group-xs

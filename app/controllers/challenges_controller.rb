@@ -10,26 +10,35 @@ class ChallengesController < ApplicationController
   def index
   end
 
+  # GET /challenges/:id
   def show
+    unless current_user.nil?
+      @current_user_flag = ChallengeFlag.find_by(user_id: current_user.id, challenge_id: @challenge.id)
+      @docker_status = @challenge.launch_docker? && ! @current_user_flag.nil? ? DockerLauncher.get_instance.status_challenge(@challenge, @current_user_flag, current_user) : nil
+    end
   end
 
   # GET /challenges/:id/launch
   def launch
-    raise 'Docker mode has not been implemented' if @challenge.launch_docker?
-    @flag = ChallengeFlag.generate_flag!(current_user.id, @challenge)
-    redirect_to @challenge if @challenge.launch_none?
-    redirect_to @challenge.url if @challenge.launch_download?
-  end
-
-  # GET /challenges/:id/giveup
-  def giveup
-    @flag = ChallengeFlag.find([current_user.id, @challenge.id])
-    if @flag.delete
-      flash[:notice] = "You have given up on challenge '#{@challenge.name}'. Try again later!"
-    else
-      flash[:error] = "Challenge give up operation failed for challenge '#{@challenge.name}'"
+    if current_user.launched_challenges.count > 0
+      flash[:error] = ('Only one challenge may be in progress at a time. ' +
+          'Please give up on any currently active challenges. ' +
+          "Your active challenges are: #{current_user.launched_challenges.map{|c| view_context.link_to(c.name,c)}.join(', ')}").html_safe
+      redirect_to @challenge
+      return
     end
-    redirect_to @challenge
+    @flag = ChallengeFlag.generate_flag(current_user.id, @challenge)
+    if @challenge.launch_docker?
+      launcher = DockerLauncher.get_instance
+      raise 'Cannot allocate docker instance for this challenge' if launcher.nil?
+      @flag.docker_container_id = launcher.launch_challenge(@challenge, @flag, current_user)
+    end
+    if @flag.save
+      redirect_to @challenge.url if @challenge.launch_download?
+    else
+      flash[:error] = 'Could not launch instance of challenge.'
+      redirect_to @challenge
+    end
   end
   
   # GET /challenges/new
@@ -84,6 +93,9 @@ class ChallengesController < ApplicationController
       # Correct flag
       if @flag.check params[:flag]
         @flag.destroy
+        if @challenge.launch_docker?
+          DockerLauncher.get_instance.kill_challenge(@challenge, @flag, @flag.user)
+        end
         if current_user.completed_challenges.include? @challenge
           flash[:notice] = "That was correct, but you have already completed '#{@challenge.name}'"
         else
@@ -126,10 +138,15 @@ class ChallengesController < ApplicationController
     redirect_to @challenge
   end
 
+  def tag_search
+    @tag = params[:tag]
+    @challenges = Challenge.tagged_with(@tag)
+  end
+
   private
   def challenge_params
-    params.require(:challenge).permit(:challenge_group_id, :name, :url, :points, :flag_type, :description,
-                                      :description_use_markdown, :launch_type, :submit_type,
+    params.require(:challenge).permit(:challenge_group_id, :name, :tag_list, :url, :points, :flag_type, :description,
+                                      :description_use_markdown, :launch_type, :submit_type, :docker_image_name,
                                       challenge_hints_attributes: [:id, :hint_text, :cost, :hint_text_use_markdown, :_destroy],
                                       flag_data: [Challenge::FLAG_TYPES.keys, set: []])
   end
