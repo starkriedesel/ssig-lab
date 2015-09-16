@@ -3,3 +3,6 @@
 
 # Ingore tmp files
 /tmp/*
+
+# Ignore production database
+/db/production.sqlite3
