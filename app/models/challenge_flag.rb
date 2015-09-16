@@ -6,6 +6,7 @@ class ChallengeFlag < ActiveRecord::Base
   validates :user_id, presence: true
   validates :challenge_id, presence: true
   validates :docker_container_id, uniqueness: true, presence: true, if: :is_docker_flag # require a container id for docker challenges
+  validates :docker_host_name, presence: true, if: :is_docker_flag # require a host name for docker challenges
   
   belongs_to :user
   belongs_to :challenge

@@ -4,7 +4,7 @@ class ChallengeFlagsController < ApplicationController
   # DELETE /flags/:id
   def destroy
     if @challenge_flag.challenge.launch_docker?
-      DockerLauncher.get_instance.kill_challenge(@challenge_flag.challenge, @challenge_flag, @challenge_flag.user)
+      DockerLauncher.get_instance(@challenge_flag.docker_host_name).kill_challenge(@challenge_flag.challenge, @challenge_flag, @challenge_flag.user)
     end
     #user_id = @challenge_flag.user_id
     if @challenge_flag.destroy

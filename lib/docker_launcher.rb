@@ -1,7 +1,7 @@
 require 'open3'
 
 class DockerLauncher
-  attr_accessor :server_name, :api_url, :certs_dir, :options, :ip, :access_ip
+  attr_accessor :host_name, :api_url, :certs_dir, :options, :public_ip
 
   def server_info
     Docker.version(connection).merge Docker.info(connection)
@@ -40,7 +40,7 @@ class DockerLauncher
         else
           type = ''
         end
-        {internal: internal, external: info[0]['HostPort'], type: type, ip: access_ip}
+        {internal: internal, external: info[0]['HostPort'], type: type, ip: public_ip}
       end
     else
       ports = nil
@@ -79,16 +79,33 @@ class DockerLauncher
   end
 
   def self.from_boot2docker
+    return @boot2docker_instance if @boot2docker_instance
     output, status = Open3.capture2e('boot2docker shellinit')
     return nil unless status == 0
     api_url = output =~ /DOCKER_HOST=(.+)$/ ? $1 : (raise 'Cannot determine boot2docker API Url')
     certs_dir = output =~ /DOCKER_CERT_PATH=(.+)$/ ? $1 : ''
-    ip = api_url =~ /:\/\/(\d+\.\d+\.\d+\.\d+):/ ? $1 : (raise 'Cannot determine boot2docker IP')
-    DockerLauncher.new ip, 'boot2docker', api_url, certs_dir
+    ip = api_url =~ /:\/\/(\d+\.\d+\.\d+\.\d+):(\d+)/ ? $1 : (raise 'Cannot determine boot2docker IP')
+    port = api_url =~ /:\/\/(\d+\.\d+\.\d+\.\d+):(\d+)/ ? $2 : (raise 'Cannot determine boot2docker Port')
+    @boot2docker_instance = DockerLauncher.new 'boot2docker', ip, ip, port, certs_dir
   end
 
-  def self.get_instance
-    from_boot2docker
+  def self.get_all_instances
+    return @instances if @instances
+    @instances = []
+    @host_config = YAML.load_file Rails.root.join('config').join('docker_hosts.yml')
+    @instances << from_boot2docker if @host_config['boot2docker'] == 'enabled' && from_boot2docker
+    (@host_config['hosts'] || {}).each do |name, conf|
+      @instances << DockerLauncher.new(name, conf['public_ip'], conf['private_ip'], conf['api_port'], conf['cert_dir'])
+    end
+    @instances
+  end
+
+  def self.get_instance(host_name=nil)
+    if host_name.nil?
+      get_all_instances.sample
+    else
+      get_all_instances.select{|i| i.host_name == host_name}.first
+    end
   end
 
   # Split name into repo:tag components
@@ -101,11 +118,11 @@ class DockerLauncher
   end
 
   #protected
-  def initialize(access_ip, server_name, api_url, certs_dir, options={})
-    @server_name = server_name
-    @api_url = api_url
-    @certs_dir = certs_dir || nil
-    @access_ip = access_ip
+  def initialize(host_name, public_ip, private_ip, api_port, cert_dir, options={})
+    @host_name = host_name
+    @api_url = "tcp://#{private_ip}:#{api_port}"
+    @public_ip = public_ip
+    @certs_dir = cert_dir || nil
     @options = generate_options options
     @connection = nil
   end

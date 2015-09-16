@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150915215835) do
+ActiveRecord::Schema.define(version: 20150916031641) do
 
   create_table "challenge_flags", id: false, force: :cascade do |t|
     t.integer  "user_id"
@@ -21,6 +21,7 @@ ActiveRecord::Schema.define(version: 20150915215835) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "docker_container_id"
+    t.string   "docker_host_name"
   end
 
   add_index "challenge_flags", ["user_id", "challenge_id"], name: "index_challenge_flags_on_user_id_and_challenge_id", unique: true

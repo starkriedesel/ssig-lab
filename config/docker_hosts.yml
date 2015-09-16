@@ -1,0 +1,8 @@
+boot2docker: enabled
+
+hosts:
+  example:
+    public_ip: example.com
+    private_ip: 10.0.0.100
+    api_port: 2376
+    cert_dir: /path/to/certs

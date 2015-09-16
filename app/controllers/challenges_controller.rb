@@ -14,7 +14,15 @@ class ChallengesController < ApplicationController
   def show
     unless current_user.nil?
       @current_user_flag = ChallengeFlag.find_by(user_id: current_user.id, challenge_id: @challenge.id)
-      @docker_status = @challenge.launch_docker? && ! @current_user_flag.nil? ? DockerLauncher.get_instance.status_challenge(@challenge, @current_user_flag, current_user) : nil
+      if @current_user_flag && @challenge.launch_docker?
+        if @current_user_flag.nil?
+          @docker_status = nil
+        else
+          @docker_status = DockerLauncher.get_instance(@current_user_flag.docker_host_name).status_challenge(@challenge, @current_user_flag, current_user)
+        end
+      else
+        @docker_status = nil
+      end
     end
   end
 
@@ -26,12 +34,14 @@ class ChallengesController < ApplicationController
           "Your active challenges are: #{current_user.launched_challenges.map{|c| view_context.link_to(c.name,c)}.join(', ')}").html_safe
       redirect_to @challenge
       return
+      # NOTE: If we don't limit to one challenge then we should make sure that the user doesn't launch the same one twice
     end
     @flag = ChallengeFlag.generate_flag(current_user.id, @challenge)
     if @challenge.launch_docker?
       launcher = DockerLauncher.get_instance
       raise 'Cannot allocate docker instance for this challenge' if launcher.nil?
       @flag.docker_container_id = launcher.launch_challenge(@challenge, @flag, current_user)
+      @flag.docker_host_name = launcher.host_name
     end
     if @flag.save
       if @challenge.launch_download?
@@ -97,7 +107,7 @@ class ChallengesController < ApplicationController
       if @flag.check params[:flag]
         @flag.destroy
         if @challenge.launch_docker?
-          DockerLauncher.get_instance.kill_challenge(@challenge, @flag, @flag.user)
+          DockerLauncher.get_instance(@flag.docker_host_name).kill_challenge(@challenge, @flag, @flag.user)
         end
         if current_user.completed_challenges.include? @challenge
           flash[:notice] = "That was correct, but you have already completed '#{@challenge.name}'"

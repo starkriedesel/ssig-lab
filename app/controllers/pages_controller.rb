@@ -5,9 +5,6 @@ class PagesController < ApplicationController
   def admin_docker
     authorize! :manage, Challenge
 
-    @docker_servers = []
-    if local_boot2docker = DockerLauncher.from_boot2docker
-      @docker_servers << local_boot2docker
-    end
+    @docker_servers = DockerLauncher.get_all_instances
   end
 end

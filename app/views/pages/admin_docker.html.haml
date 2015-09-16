@@ -5,8 +5,10 @@
   .col-lg-6.col-md-12
     .panel.panel-info
       .panel-heading
-        %h2= docker_server.server_name
-        %h4= docker_server.access_ip
+        %h2= docker_server.host_name
+        %h4
+          Public:
+          = docker_server.public_ip
       .panel-body
         .btn-group
           %a.btn.btn-primary{data:{toggle:'collapse'}, href: "#collapseChallenges#{i}", aria: {expanded: 'false', controls: "collapseChallenges#{i}"}}
