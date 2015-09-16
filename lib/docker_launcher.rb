@@ -1,17 +1,23 @@
 require 'open3'
 
 class DockerLauncher
-  attr_accessor :host_name, :api_url, :certs_dir, :options, :public_ip
+  attr_accessor :host_name, :api_url, :certs_dir, :options, :public_ip, :responding, :last_verify_time
 
   def server_info
-    Docker.version(connection).merge Docker.info(connection)
+    return @server_info if ! @server_info.nil? or (! last_verify_time.nil? and (Time.now - last_verify_time) < 30.seconds)
+    @last_verify_time = Time.now
+    @server_info = Docker.version(connection).merge Docker.info(connection)
+  rescue
+    nil
   end
 
   def running_containers
+    return [] unless responding
     Docker::Container.all({}, connection).map(&:id)
   end
 
   def launch_challenge(challenge, flag, user)
+    return nil unless responding
     repo, tag = parse_repo_tag challenge.docker_image_name
     image = get_local_images[repo]
     image = (image || {})[tag] unless tag.blank?
@@ -21,6 +27,7 @@ class DockerLauncher
   end
 
   def status_challenge(challenge, flag, user)
+    return {status: :unknown, ports: []} unless responding
     container = Docker::Container.get(flag.docker_container_id, {}, connection)
     status = if container.nil?
                :missing
@@ -49,6 +56,7 @@ class DockerLauncher
   end
 
   def kill_challenge(challenge, flag, user)
+    return false unless responding
     container = Docker::Container.get(flag.docker_container_id, {}, connection)
     return true if container.nil?
     container.kill.delete
@@ -56,6 +64,7 @@ class DockerLauncher
   end
 
   def running_challenges
+    return [] unless responding
     Docker::Container.all({}, connection).map do |container|
       flag = ChallengeFlag.where(docker_container_id: container.id).first
       info = {
@@ -102,7 +111,7 @@ class DockerLauncher
 
   def self.get_instance(host_name=nil)
     if host_name.nil?
-      get_all_instances.sample
+      get_all_instances.select(&:responding).sample
     else
       get_all_instances.select{|i| i.host_name == host_name}.first
     end
@@ -125,6 +134,8 @@ class DockerLauncher
     @certs_dir = cert_dir || nil
     @options = generate_options options
     @connection = nil
+    @last_verify_time = nil
+    @responding = ! server_info.nil?
   end
 
   def connection
@@ -139,12 +150,14 @@ class DockerLauncher
          client_cert: File.join(certs_dir, 'cert.pem'),
          client_key: File.join(certs_dir, 'key.pem'),
          ssl_ca_file: File.join(certs_dir, 'ca.pem'),
-         scheme: 'https'
+         scheme: 'https',
+         connect_timeout: 5
        })
     end
   end
 
   def get_local_images
+    return [] unless responding
     images = {}
     Docker::Image.all({}, connection).each do |image|
       repo, tag = parse_repo_tag image.info['RepoTags'][0]
@@ -156,6 +169,7 @@ class DockerLauncher
   end
 
   def launch_container(image_name, env)
+    return nil unless responding
     env = env.map {|k,v| "#{k}=#{v}"}
     container = Docker::Container.create({'Image' => image_name, 'HostConfig' => {'PublishAllPorts' => true}, 'Env' => env}, connection)
     raise 'Could not create container' if container.nil?
