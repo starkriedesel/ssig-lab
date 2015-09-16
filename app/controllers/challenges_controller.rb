@@ -34,11 +34,14 @@ class ChallengesController < ApplicationController
       @flag.docker_container_id = launcher.launch_challenge(@challenge, @flag, current_user)
     end
     if @flag.save
-      redirect_to @challenge.url if @challenge.launch_download?
+      if @challenge.launch_download?
+        redirect_to @challenge.url
+        return
+      end
     else
       flash[:error] = 'Could not launch instance of challenge.'
-      redirect_to @challenge
     end
+    redirect_to @challenge
   end
   
   # GET /challenges/new
