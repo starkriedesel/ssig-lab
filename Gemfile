@@ -1,14 +1,14 @@
 source 'https://rubygems.org'
 
 gem 'rails', '4.2.3'
-gem 'thin'
+gem 'thin', '~> 1.6.0'
 
 # Database
-gem 'sqlite3'
+gem 'sqlite3', '~> 1.3.0'
 #gem 'mysql2'
-gem 'activerecord-session_store'
-gem 'composite_primary_keys'
-gem 'acts-as-taggable-on', '~> 3.4'
+gem 'activerecord-session_store', '~> 0.1.0'
+gem 'composite_primary_keys', '~> 8.1.0'
+gem 'acts-as-taggable-on', '~> 3.5.0'
 
 # Debug
 group :development do
@@ -23,18 +23,17 @@ end
 gem 'haml', github: 'haml/haml', ref: '7c7c169'
 #gem 'haml-rails'
 #gem 'haml-contrib'
-gem 'rdiscount'
-gem 'markdown-rails'
+gem 'rdiscount', '~> 1.6.0'
+gem 'markdown-rails', '~> 0.2.0'
 #gem 'RedCloth'
 
 # View Components for Rails.
-gem 'cells'
-gem 'cells-haml'
-gem 'turbolinks'
+gem 'cells', '~> 4.0.0'
+gem 'cells-haml', '~> 0.0.8'
 
 # User Management
-gem 'devise'
-gem 'cancancan'
+gem 'devise', '~> 3.5.0'
+gem 'cancancan', '~> 1.12.0'
 
 # Assets
 gem 'sass-rails'
@@ -43,10 +42,11 @@ gem 'uglifier'
 gem 'twitter-bootstrap-rails', github: 'seyhunak/twitter-bootstrap-rails'
 gem 'jquery-rails'
 gem 'jquery-turbolinks'
+gem 'turbolinks'
 gem 'therubyracer', platform: :ruby
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin]
 
 # Docker Engine
-gem 'docker-api', require: 'docker'
+gem 'docker-api', '~> 1.22.0', require: 'docker'
