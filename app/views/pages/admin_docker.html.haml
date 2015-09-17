@@ -15,6 +15,8 @@
           .btn-group
             %a.btn.btn-primary{data:{toggle:'collapse'}, href: "#collapseChallenges#{i}", aria: {expanded: 'false', controls: "collapseChallenges#{i}"}}
               Show Running Challenges
+            %a.btn.btn-info{data:{toggle:'collapse'}, href: "#collapseImages#{i}", aria: {expanded: 'false', controls: "collapseImages#{i}"}}
+              Show Images
             %a.btn.btn-default{data:{toggle:'collapse'}, href: "#collapseOptions#{i}", aria: {expanded: 'false', controls: "collapseOptions#{i}"}}
               Show Options
         .collapse.in{id:"collapseChallenges#{i}"}
@@ -35,10 +37,13 @@
                             = link_to 'Kill', challenge_flag_path(info.delete(:_flag_id).to_s.html_safe), method: :delete, class: 'btn btn-danger btn-xs', data: {confirm: 'Are you sure?'}
                     %td
                       = render partial: 'pages/options_table', locals: {options: info, is_inner_table: true}
+        .collapse{id:"collapseImages#{i}"}
+          - images = docker_server.get_image_names
+          = render partial: 'pages/options_table', locals: {options: {Images: images}, is_inner_table: false}
         .collapse{id:"collapseOptions#{i}"}
           - options = docker_server.server_info
           - options['API Url'] = docker_server.api_url
           - options['Options'] = docker_server.options
           - options['DriverStatus'] = options['DriverStatus'].to_h
           = render partial: 'pages/options_table', locals: {options: options, is_inner_table: false}
-          - i += 1
+        - i += 1

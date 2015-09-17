@@ -1,8 +1,8 @@
-boot2docker: enabled
+boot2docker: disabled
 
 hosts:
-  example:
-    public_ip: example.com
-    private_ip: 10.0.0.100
+  docker1:
+    public_ip: starkriedesel.com
+    private_ip: 10.0.0.11
     api_port: 2376
-    cert_dir: /path/to/certs
+    cert_dir: C:\Users\Stark\.docker\docker1_certs

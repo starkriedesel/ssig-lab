@@ -87,6 +87,13 @@ class DockerLauncher
     end.to_h
   end
 
+  def get_image_names
+    return [] unless responding
+    images = []
+    get_local_images.each {|repo, x| x.each {|tag, _| images << (tag.blank? or tag == 'latest' ? repo : "#{repo}:#{tag}") }}
+    images
+  end
+
   def self.from_boot2docker
     return @boot2docker_instance if @boot2docker_instance
     output, status = Open3.capture2e('boot2docker shellinit')

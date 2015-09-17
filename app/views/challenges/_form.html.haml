@@ -30,7 +30,7 @@
     .form-group{class: (@challenge.errors[:docker_image_name].any? ? 'has-error':'')}
       = f.label :docker_image_name, class: 'control-label col-sm-2'
       .col-sm-8
-        = f.text_field :docker_image_name, class: 'form-control'
+        = f.select :docker_image_name, DockerLauncher.get_instance.get_image_names.map {|name| [name, name]}.to_h, {prompt: 'Select One'}, class: 'form-control'
     .form-group{class: (@challenge.errors[:points].any? ? 'has-error':'')}
       = f.label :points, class: 'control-label col-sm-2'
       .col-sm-8
