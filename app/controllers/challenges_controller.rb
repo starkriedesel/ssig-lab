@@ -36,6 +36,7 @@ class ChallengesController < ApplicationController
       return
       # NOTE: If we don't limit to one challenge then we should make sure that the user doesn't launch the same one twice
     end
+
     @flag = ChallengeFlag.generate_flag(current_user.id, @challenge)
     if @challenge.launch_docker?
       launcher = DockerLauncher.get_instance
@@ -43,14 +44,8 @@ class ChallengesController < ApplicationController
       @flag.docker_container_id = launcher.launch_challenge(@challenge, @flag, current_user)
       @flag.docker_host_name = launcher.host_name
     end
-    if @flag.save
-      if @challenge.launch_download?
-        redirect_to @challenge.url
-        return
-      end
-    else
-      flash[:error] = 'Could not launch instance of challenge.'
-    end
+
+    flash[:error] = 'Could not launch instance of challenge.' unless @flag.save
     redirect_to @challenge
   end
   

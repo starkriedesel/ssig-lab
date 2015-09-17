@@ -71,7 +71,7 @@
         - if @challenge.submit_service?
           = link_to 'Submit for Grading', challenge_complete_path(@challenge), class: 'btn btn-success', data: {confirm: 'Are you sure you wish to be graded on this challenge?'}
         - if @challenge.launch_download?
-          =link_to 'Download Again', challenge_launch_path(@challenge), class: 'btn btn-primary'
+          =link_to 'Download', @challenge.url, class: 'btn btn-primary', target: '_blank', download: true
         - if can? :destroy, @current_user_flag
           = link_to 'Give Up', @current_user_flag, method: :delete, class: 'btn btn-danger', data: {confirm: 'Are you sure?'}
       - else
