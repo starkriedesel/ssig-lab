@@ -1,8 +1,0 @@
-boot2docker: disabled
-
-hosts:
-  docker1:
-    public_ip: starkriedesel.com
-    private_ip: 10.0.0.11
-    api_port: 2376
-    cert_dir: C:\Users\Stark\.docker\docker1_certs
