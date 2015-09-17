@@ -1,6 +1,9 @@
 # Ignore dockerfiles
 /dockerfiles
 
+# Docker Compose definition
+/docker-compose.yml
+
 # Ingore tmp files
 /tmp/*
 

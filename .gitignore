@@ -23,3 +23,6 @@ Gemfile.lock
 
 # Challenge dockers
 /dockerfiles/challenges
+
+# Do not include sensitive information in docker_hosts.yml
+/config/docker_hosts.yml

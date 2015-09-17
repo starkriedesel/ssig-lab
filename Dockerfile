@@ -7,5 +7,5 @@ RUN bundle install
 
 ENV RAILS_ENV production
 
-RUN rake db:setup
 RUN rake assets:precompile
+RUN rm -f /usr/src/app/db/production.sqlite3
