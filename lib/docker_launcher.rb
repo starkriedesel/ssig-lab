@@ -94,24 +94,26 @@ class DockerLauncher
     images
   end
 
-  def self.from_boot2docker
-    return @boot2docker_instance if @boot2docker_instance
-    output, status = Open3.capture2e('boot2docker shellinit')
+  def self.from_docker_machine
+    return @docker_machine_instance if @docker_machine_instance
+    output, status = Open3.capture2e('docker-machine env')
     return nil unless status == 0
-    api_url = output =~ /DOCKER_HOST=(.+)$/ ? $1 : (raise 'Cannot determine boot2docker API Url')
+    api_url = output =~ /DOCKER_HOST=(.+)$/ ? $1 : (raise 'Cannot determine docker-machine API Url')
     certs_dir = output =~ /DOCKER_CERT_PATH=(.+)$/ ? $1 : ''
-    ip = api_url =~ /:\/\/(\d+\.\d+\.\d+\.\d+):(\d+)/ ? $1 : (raise 'Cannot determine boot2docker IP')
-    port = api_url =~ /:\/\/(\d+\.\d+\.\d+\.\d+):(\d+)/ ? $2 : (raise 'Cannot determine boot2docker Port')
-    @boot2docker_instance = DockerLauncher.new 'boot2docker', ip, ip, port, certs_dir
+    ip = api_url =~ /:\/\/(\d+\.\d+\.\d+\.\d+):(\d+)/ ? $1 : (raise 'Cannot determine docker-machine IP')
+    port = api_url =~ /:\/\/(\d+\.\d+\.\d+\.\d+):(\d+)/ ? $2 : (raise 'Cannot determine docker-machine Port')
+    @docker_machine_instance = DockerLauncher.new 'docker-machine', ip, ip, port, certs_dir
   end
 
   def self.get_all_instances
     return @instances if @instances
     @instances = []
     @host_config = YAML.load_file Rails.root.join('config').join('docker_hosts.yml')
-    @instances << from_boot2docker if @host_config['boot2docker'] == 'enabled' && from_boot2docker
+    @instances << from_docker_machine if @host_config['docker_machine']['enabled'] && from_docker_machine
     (@host_config['hosts'] || {}).each do |name, conf|
-      @instances << DockerLauncher.new(name, conf['public_ip'], conf['private_ip'], conf['api_port'], conf['cert_dir'])
+      if conf['enabled']
+        @instances << DockerLauncher.new(name, conf['public_ip'], conf['private_ip'], conf['api_port'], conf['cert_dir'])
+      end
     end
     @instances
   end
