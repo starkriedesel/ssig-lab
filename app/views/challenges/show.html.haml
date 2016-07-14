@@ -41,8 +41,8 @@
     %td
       - if @challenge.launch_none?
         Click "Start Challenge" below and then
-      - elsif @challenge.launch_download?
-        Download the challenge by clicking "Start Challenge" and then
+      - elsif @challenge.launch_url?
+        Begin the challenge by clicking "Start Challenge" and then
       - elsif @challenge.launch_docker?
         Clicking "Start Challenge" below will setup a server for you to use. Then
       - else
@@ -70,8 +70,8 @@
       - if challenge_launched
         - if @challenge.submit_service?
           = link_to 'Submit for Grading', challenge_complete_path(@challenge), class: 'btn btn-success', data: {confirm: 'Are you sure you wish to be graded on this challenge?'}
-        - if @challenge.launch_download?
-          =link_to 'Download', @challenge.url, class: 'btn btn-primary', target: '_blank', download: ''
+        - if @challenge.launch_url?
+          =link_to 'Goto Challenge', @challenge.url, class: 'btn btn-primary', target: '_blank'
         - if can? :destroy, @current_user_flag
           = link_to 'Give Up', @current_user_flag, method: :delete, class: 'btn btn-danger', data: {confirm: 'Are you sure?'}
       - else

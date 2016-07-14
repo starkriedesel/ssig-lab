@@ -9,7 +9,7 @@ class Challenge < ActiveRecord::Base
   with_markdown :description
 
   # Enums
-  enum launch_type: [:launch_none, :launch_download, :launch_docker]
+  enum launch_type: [:launch_none, :launch_url, :launch_docker]
   enum submit_type: [:submit_simple, :submit_service, :submit_auto]
 
   # Validations
@@ -18,7 +18,7 @@ class Challenge < ActiveRecord::Base
   validates :points, :presence => true, :numericality => { :only_integer => true, :greater_than_or_equal_to => 0 }
   validates :launch_type, presence: true
   validates :submit_type, presence: true
-  validates :url, :presence => true, :format => {:with => /\Ahttps?:\/\/.+\z/}, if: :launch_download? # URL only required for download types
+  validates :url, :presence => true, :format => {:with => /\Ahttps?:\/\/.+\z/}, if: :launch_url? # URL only required for launch_url
   validates :docker_image_name, presence: true, if: :launch_docker? # Docker image only required for docker types
   validates :submit_type, exclusion: {in: %w(submit_service)}, unless: :launch_docker? # Only docker has services
   validates :submit_type, inclusion: {in: %w(submit_simple)}, if: :launch_none? # Launch none must have simple submit
