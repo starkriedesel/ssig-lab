@@ -1,3 +1,28 @@
-Apache Config:
-	Apache 2.4 MPM not supported, please use mpm_prefork and mod_php
-	If proxy_fcgi is used the challenges will not display correctly
+CTF Engine
+================
+* Each challenge instance runs in an issolated docker container
+* Create challenges as docker images
+* For development: supports docker-machine auto-configuration
+* Run the engine from docker too :D
+* Scalability: Supports multiple Docker servers (round-robin selection)
+
+Setup - Development
+========================
+* Install Ruby
+* Unix: Install Docker
+* Windows/OSX: Install Docker Toolbox
+* `bundle install`
+* `bundle exec rake db:setup`
+* `bundle exec rails server`
+* Update config/docker_hosts.yml
+* Create challenges in the dockerfiles/challenges directory
+* Build challenges using `rails dockerfiles/build_all.rb`
+* Default creds: admin:admin123
+
+Setup - Production
+========================
+* Collect TLS certificate from Docker servers
+* Configure config/docker_hosts.yml
+* Configure docker-compose.yml to point to cert path
+* `docker-compose run engine bundle exec rake db:setup`
+* `docker-compose up -d`

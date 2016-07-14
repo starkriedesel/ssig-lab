@@ -1,8 +1,7 @@
 engine:
   build: .
   volumes:
-    - /mnt/data/ctf_production.sqlite3:/usr/src/app/db/production.sqlite3
+    - ./db/ctf_production.sqlite3:/usr/src/app/db/production.sqlite3
     - ./config:/usr/src/app/config
-    - /mnt/data/ctf_docker1_certs:/usr/src/docker1_certs
-  environment:
-    VIRTUAL_HOST: ctf.starkriedesel.com
+    - ./example_certs:/usr/src/example_certs
+

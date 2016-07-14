@@ -1,0 +1,10 @@
+docker_machine:
+  enabled: true
+
+hosts:
+  example_server:
+    enabled: false
+    public_ip: example.com
+    private_ip: 10.0.0.11
+    api_port: 2376
+    cert_dir: /usr/src/example_certs
