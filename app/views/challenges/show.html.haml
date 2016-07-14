@@ -23,19 +23,19 @@
       %th Status
       %td
         %strong= @docker_status[:status].to_s.humanize
-        %br
-        To access the challenge use the following IPs / Ports:
-        %table.table.table-condensed
-          - @docker_status[:ports].each do |port|
-            %tr
-              %td
-                - if port[:type] == 'tcp' and port[:internal].to_i == 80
-                  = link_to "http://#{port[:ip]}:#{port[:external]}", "http://#{port[:ip]}:#{port[:external]}"
-                - elsif port[:type] == 'tcp' and port[:internal].to_i == 443
-                  = link_to "https://#{port[:ip]}:#{port[:external]}", "https://#{port[:ip]}:#{port[:external]}"
-                - else
-                  %strong= "#{port[:type]}://#{port[:ip]}:#{port[:external]}"
-                  = "(Maps internally to #{port[:type]} port #{port[:internal]})"
+        - if @docker_status[:ports].size > 0 && @challenge.goto_url(@docker_status).nil?
+          %br
+          To access the challenge use the following IPs / Ports:
+          %table.table.table-condensed
+            - @docker_status[:ports].each do |port|
+              - url = Challenge.port_to_url(port)
+              %tr
+                %td
+                  - if url.nil?
+                    %strong= "#{port[:type]}://#{port[:ip]}:#{port[:external]}"
+                    = "(Maps internally to #{port[:type]} port #{port[:internal]})"
+                  - else
+                    = link_to url, url
   %tr
     %th Instructions
     %td
@@ -70,8 +70,8 @@
       - if challenge_launched
         - if @challenge.submit_service?
           = link_to 'Submit for Grading', challenge_complete_path(@challenge), class: 'btn btn-success', data: {confirm: 'Are you sure you wish to be graded on this challenge?'}
-        - if @challenge.launch_url?
-          =link_to 'Goto Challenge', @challenge.url, class: 'btn btn-primary', target: '_blank'
+        - unless @challenge.goto_url(@docker_status).nil?
+          =link_to 'Goto Challenge', @challenge.goto_url(@docker_status), class: 'btn btn-primary', target: '_blank'
         - if can? :destroy, @current_user_flag
           = link_to 'Give Up', @current_user_flag, method: :delete, class: 'btn btn-danger', data: {confirm: 'Are you sure?'}
       - else
@@ -88,4 +88,3 @@
       = link_to 'Edit', edit_challenge_path(@challenge), class: 'btn btn-warning'
     - if can? :destroy, @challenge
       = link_to 'Remove', challenge_path(@challenge), class: 'btn btn-danger', method: :delete, data: {confirm: 'Are you sure?'}
-

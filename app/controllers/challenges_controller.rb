@@ -1,4 +1,6 @@
 class ChallengesController < ApplicationController
+  MAX_LAUNCHED_CHALLENGES = 1
+
   # Controler authorized actions by Cancan
   load_and_authorize_resource
   skip_load_resource only: [:create]
@@ -12,6 +14,10 @@ class ChallengesController < ApplicationController
 
   # GET /challenges/:id
   def show
+    unless session[:launch_url].nil?
+      @goto_launch_url = session[:launch_url]
+      session[:launch_url] = nil
+    end
     unless current_user.nil?
       @current_user_flag = ChallengeFlag.find_by(user_id: current_user.id, challenge_id: @challenge.id)
       if @current_user_flag && @challenge.launch_docker?
@@ -28,24 +34,41 @@ class ChallengesController < ApplicationController
 
   # GET /challenges/:id/launch
   def launch
-    if current_user.launched_challenges.count > 0
-      flash[:error] = ('Only one challenge may be in progress at a time. ' +
-          'Please give up on any currently active challenges. ' +
+    if ChallengeFlag.where(user_id: current_user.id, challenge_id: @challenge.id).count > 0
+      flash[:error] = 'You have all ready launched this challenge'
+      redirect_to @challenge
+      return
+    end
+
+    if current_user.launched_challenges.count >= MAX_LAUNCHED_CHALLENGES
+      flash[:error] = ("Only #{MAX_LAUNCHED_CHALLENGES} challenge may be in progress at a time. " +
+          'Please give up on a currently active challenge. ' +
           "Your active challenges are: #{current_user.launched_challenges.map{|c| view_context.link_to(c.name,c)}.join(', ')}").html_safe
       redirect_to @challenge
       return
-      # NOTE: If we don't limit to one challenge then we should make sure that the user doesn't launch the same one twice
     end
 
     @flag = ChallengeFlag.generate_flag(current_user.id, @challenge)
+    docker_inst = nil
     if @challenge.launch_docker?
-      launcher = DockerLauncher.get_instance
-      raise 'Cannot allocate docker instance for this challenge' if launcher.nil?
-      @flag.docker_container_id = launcher.launch_challenge(@challenge, @flag, current_user)
-      @flag.docker_host_name = launcher.host_name
+      docker_inst = DockerLauncher.get_instance
+      raise 'Cannot allocate docker instance for this challenge' if docker_inst.nil?
+      @flag.docker_container_id = docker_inst.launch_challenge(@challenge, @flag, current_user)
+      @flag.docker_host_name = docker_inst.host_name
     end
 
-    flash[:error] = 'Could not launch instance of challenge.' unless @flag.save
+    if @flag.save
+      if docker_inst.nil?
+        goto_url = @challenge.goto_url
+      else
+        goto_url = @challenge.goto_url(docker_inst.status_challenge(@challenge, @flag, current_user))
+      end
+      unless goto_url.nil?
+        session[:launch_url] = goto_url
+      end
+    else
+      flash[:error] = 'Could not launch instance of challenge.' unless @flag.save
+    end
     redirect_to @challenge
   end
   

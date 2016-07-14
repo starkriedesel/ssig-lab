@@ -43,6 +43,52 @@ class Challenge < ActiveRecord::Base
   
   # Nested Form Associations
   accepts_nested_attributes_for :challenge_hints, allow_destroy: true, reject_if: proc {|attr| attr['cost'].to_i < 0 or attr['hint_text'].blank?}
+
+  def self.port_to_url(port)
+    proto = nil
+    if port[:type] == 'tcp'
+      proto = case port[:internal].to_i
+                when 21
+                  'ftp'
+                when 22
+                  'ssh'
+                when 23
+                  'telnet'
+                when 80
+                  'http'
+                when 443
+                  'https'
+                else
+                  nil
+              end
+    end
+    "#{proto}://#{port[:ip]}:#{port[:external]}" unless proto.nil?
+  end
+
+  def all_goto_urls(docker_status)
+    urls = []
+    docker_status[:ports].each do |port|
+      url = Challenge.port_to_url(port)
+      urls << url unless url.nil?
+    end
+    urls
+  end
+
+  def goto_url(docker_status=nil)
+    if launch_url?
+      url
+    elsif launch_docker?
+      raise 'Need docker_status to get Goto URL' if docker_status.nil?
+      urls = all_goto_urls(docker_status)
+      if urls.count == 1
+        urls[0]
+      else
+        nil
+      end
+    else
+      nil
+    end
+  end
   
   def opened_hints_for_user(user)
     user.challenge_hints.where(:id => self.challenge_hints.select('id'))
