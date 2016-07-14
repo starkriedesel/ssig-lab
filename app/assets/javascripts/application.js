@@ -19,7 +19,7 @@
 //= require jquery.xcolor.min
 //= require_tree .
 
-$(function () {
+$(document).on('turbolinks:load', function () {
     $('.label.fraction').each(function (i, label) {
         var obj = $(label);
         var n = parseInt(obj.find('.numerator').html());

@@ -1,12 +1,12 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.3'
+gem 'rails', '4.2.7'
 gem 'thin', '~> 1.6.0'
 
 # Database
 gem 'sqlite3', '~> 1.3.0'
 #gem 'mysql2'
-gem 'activerecord-session_store', '~> 0.1.0'
+gem 'activerecord-session_store', '~> 1.0.0'
 gem 'composite_primary_keys', '~> 8.1.0'
 gem 'acts-as-taggable-on', '~> 3.5.0'
 
@@ -20,16 +20,11 @@ group :development do
 end
 
 # Render Engines
-gem 'haml', github: 'haml/haml', ref: '7c7c169'
-#gem 'haml-rails'
+gem 'haml-rails'
 #gem 'haml-contrib'
 gem 'rdiscount', '~> 1.6.0'
 gem 'markdown-rails', '~> 0.2.0'
 #gem 'RedCloth'
-
-# View Components for Rails.
-gem 'cells', '~> 4.0.0'
-gem 'cells-haml', '~> 0.0.8'
 
 # User Management
 gem 'devise', '~> 3.5.0'

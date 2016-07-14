@@ -17,7 +17,7 @@
         -# Messages Btn
         - if can? :read, UserMessage
           %p.navbar-text.navbar-right.navbar-form
-            %a.btn.btn-default.btn-xs.btn-inverse{title: pluralize(@unread_msgs, 'Message'), data: { placement: 'bottom'}, rel: 'tooltip', href: user_messages_path, class: @unread_msgs > 0 ? 'unread_msgs_color': ''}
+            %a.btn.btn-default.btn-xs.btn-inverse{title: pluralize(unread_msg_count, 'Message'), data: { placement: 'bottom'}, rel: 'tooltip', href: user_messages_path, class: @unread_msgs > 0 ? 'unread_msgs_color': ''}
               %i.fa.fa-envelope
         -# Signed in as text
         %p.navbar-text.navbar-right
@@ -28,7 +28,7 @@
       - else # User Not Signed In:
         .visible-lg-inline
           -# User Sign In Form
-          = form_for User.new, :as=>:user, :url=>login_path, :html=>{:class=>'navbar-form navbar-right'} do |f|
+          = form_for(User.new, as: :user, url: login_path, html: {class: 'navbar-form navbar-right'}) do |f|
             .form-group
               = f.text_field :username, :class=>'form-control', :placeholder=>'Username'
             .form-group
@@ -36,7 +36,7 @@
             = f.submit 'Sign in', :class=>'btn btn-default'
 
       %ul.nav.navbar-nav
-        - @nav_links.each_pair do |name,link|
+        - nav_links.each_pair do |name,link|
           - next if not link[:condition]
           %li{class: ((link[:active] ? 'active' : '') +' '+ (link[:sublinks].any? ? 'dropdown' : '') +' '+ (link[:class] || ''))}
             %a{class: (link[:sublinks].any? ? 'dropdown-toggle' : ''), href: link[:url]}
