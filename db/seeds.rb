@@ -6,14 +6,15 @@
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
 
-# Setup Users/Roles
-Role.destroy_all
-Role.reset_pk_sequence
-admin_role = Role.create({id: 1, name: 'admin'})
-User.destroy_all
-User.reset_pk_sequence
-
 if Rails.env.development?
+  
+  # Setup Users/Roles
+  Role.destroy_all
+  Role.reset_pk_sequence
+  admin_role = Role.create({id: 1, name: 'admin'})
+  User.destroy_all
+  User.reset_pk_sequence
+
   srand(0)
   challenge_server = 'http://10.0.0.5'
 
@@ -111,4 +112,11 @@ if Rails.env.development?
     }
     users << u
   }
+
+elsif Rails.env.production?
+
+  if Role.where(id: 1).count == 0
+    Role.create({id: 1, name: 'admin'})
+  end
+
 end
