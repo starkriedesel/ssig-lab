@@ -27,7 +27,7 @@ class ApplicationController < ActionController::Base
 
   private
   def authenticate_http_basic
-    return unless Rails.env.production?
+    return #unless Rails.env.production?
     authenticate_or_request_with_http_basic do |username, password|
       username == 'ssig' and password == 'SSIGAdmin1'
     end
