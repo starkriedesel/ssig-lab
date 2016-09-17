@@ -1,11 +1,13 @@
-FROM rails:onbuild
+FROM ruby:2.3
 
-# Prevent silent errors when Gemfile.lock is generated on a different system (like windows!)
-# Make sure to provide specific version numbers in the Gemfile!
-RUN bundle config --global frozen 0
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+COPY Gemfile /usr/src/app/Gemfile
 RUN bundle install
 
-ENV RAILS_ENV production
+COPY . /usr/src/app
+RUN rm -rf /usr/src/app/db/production.sqlite3 && touch /usr/src/app/db/production.sqlite3
 
-RUN rake assets:precompile
-RUN rm -f /usr/src/app/db/production.sqlite3
+ENTRYPOINT ["/usr/src/app/start.sh"]
+CMD ["/usr/src/app/bin/rails", "server", "-p", "3000", "-b", "0.0.0.0"]
