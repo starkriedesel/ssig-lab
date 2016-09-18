@@ -1,7 +1,7 @@
 engine:
   build: .
   volumes:
-    - ./db/ctf_production.sqlite3:/usr/src/app/db/production.sqlite3
+    - ./db/data:/usr/src/app/db/data
     - ./config:/usr/src/app/config
     - ./example_certs:/usr/src/example_certs
 
