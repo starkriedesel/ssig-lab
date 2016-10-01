@@ -80,7 +80,7 @@ class Challenge < ActiveRecord::Base
     elsif launch_docker?
       raise 'Need docker_status to get Goto URL' if docker_status.nil?
       urls = all_goto_urls(docker_status)
-      if urls.count == 1
+      if urls.count == 1 && urls[0] =~ /^http/
         urls[0]
       else
         nil
