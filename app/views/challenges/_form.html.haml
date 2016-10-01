@@ -18,7 +18,10 @@
     .form-group
       = f.label :launch_type, class: 'control-label col-sm-2'
       .col-sm-8
-        = f.select :launch_type, Challenge.launch_types.to_a.map { |a,_| [a.split('_',2)[1].humanize, a] }.to_h, {}, class: 'form-control'
+        - launch_types = Challenge.launch_types
+        - if DockerLauncher.get_instance.nil?
+          - launch_types.delete(:docker)
+        = f.select :launch_type, launch_types.to_a.map { |a,_| [a.split('_',2)[1].humanize, a] }.to_h, {}, class: 'form-control'
     .form-group
       = f.label :submit_type, class: 'control-label col-sm-2'
       .col-sm-8
@@ -27,10 +30,11 @@
       = f.label :url, class: 'control-label col-sm-2'
       .col-sm-8
         = f.text_field :url, class: 'form-control'
-    .form-group{class: (@challenge.errors[:docker_image_name].any? ? 'has-error':'')}
-      = f.label :docker_image_name, class: 'control-label col-sm-2'
-      .col-sm-8
-        = f.select :docker_image_name, DockerLauncher.get_instance.get_image_names.map {|name| [name, name]}.to_h, {prompt: 'Select One'}, class: 'form-control'
+    - unless DockerLauncher.get_instance.nil?
+      .form-group{class: (@challenge.errors[:docker_image_name].any? ? 'has-error':'')}
+        = f.label :docker_image_name, class: 'control-label col-sm-2'
+        .col-sm-8
+          = f.select :docker_image_name, DockerLauncher.get_instance.get_image_names.map {|name| [name, name]}.to_h, {prompt: 'Select One'}, class: 'form-control'
     .form-group{class: (@challenge.errors[:points].any? ? 'has-error':'')}
       = f.label :points, class: 'control-label col-sm-2'
       .col-sm-8
