@@ -169,6 +169,8 @@ class DockerLauncher
     return [] unless responding
     images = {}
     Docker::Image.all({}, connection).each do |image|
+      repo_tags = image.info['RepoTags']
+      next if repo_tags.nil?
       repo, tag = parse_repo_tag image.info['RepoTags'][0]
       next if repo == '<none>'
       images[repo] ||= {}
