@@ -1,7 +1,26 @@
+db:
+  image: mariadb:10
+  volumes:
+    - ./db/data:/var/lib/mysql
+  environment:
+    MYSQL_DATABASE: ssiglib
+    MYSQL_USER: ssiglib
+    MYSQL_PASSWORD: ssiglib
+    MYSQL_RANDOM_ROOT_PASSWORD: yes
+
 engine:
   build: .
+  links:
+    - db
   volumes:
-    - ./db/data:/usr/src/app/db/data
     - ./config:/usr/src/app/config
     - ./example_certs:/usr/src/example_certs
+  ports:
+    - "3000:3000"
+  environment:
+    DB_HOST: db
+    DB_NAME: ssiglab
+    DB_USER: ssiglab
+    DB_PASSWORD: ssiglab
+    RAILS_ENV: development
 
