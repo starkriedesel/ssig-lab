@@ -4,10 +4,13 @@ set -e
 cd /usr/src/app
 echo RAILS_ENV = $RAILS_ENV
 
-echo Setup database
-bin/rake db:create
-bin/rake db:migrate
-bin/rake db:seed
+if [ $(bin/rake db:exists) -eq 0 ]; then
+  echo "Setup database (first time)"
+  bin/rake db:setup
+else
+  echo Run migrations
+  bin/rake db:migrate
+fi
 
 if [ "$RAILS_ENV" == "production" ]; then
   echo Pre-compile assets for production
